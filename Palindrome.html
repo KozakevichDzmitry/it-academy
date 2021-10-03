@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Palindrome</title>
+</head>
+<body>
+
+
+
+<script>
+	"use strict";
+  let userStr = prompt("Введите строку", 'пооп');
+  function palindrome(str){
+    let currentStr = str.toLowerCase(); // делаем все буквы строчными
+    currentStr = currentStr.replace(/[\s,,,.,:,;,!,?,\-,',",ь,ъ]/g, ''); // убираем лишние символы и пробелы
+    
+    if(currentStr[i] === 'ё' && currentStr[currentStr.length - (i+1)] === 'е' || currentStr[i] === 'е' && currentStr[currentStr.length - (i+1)] === 'ё'){     // проверка на совпадение е и ё
+         continue;
+      }else if(currentStr[i] !== currentStr[currentStr.length - (i+1)]){ //проверка на совпадение
+        return false
+      }
+    }
+    return true
+  
+  alert(palindrome(userStr)? 'это палиндром' : 'это не палиндром');
+</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sumVowels</title>
+</head>
+<body>
+
+
+<script>
+    "use strict";
+    let userStr = prompt("Введите строку", 'Строка');
+
+
+    function sumVowelsForEach(str) {
+        let arr = str.toLowerCase().split('');
+        let sum = 0;
+        arr.forEach(function (vowelUser) {
+            if (vowelUser === 'а' ||
+                vowelUser === 'е' ||
+                vowelUser === 'ё' ||
+                vowelUser === 'и' ||
+                vowelUser === 'о' ||
+                vowelUser === 'у' ||
+                vowelUser === 'ы' ||
+                vowelUser === 'э' ||
+                vowelUser === 'ю' ||
+                vowelUser === 'я') {
+                sum++
+            }
+        });
+        return sum
+    }
+
+    function sumVowelsFilter(str) {
+        let arr = str.toLowerCase().split('');
+        let filt = arr.filter(function (vowelUser) {
+            if (vowelUser === 'а' ||
+                vowelUser === 'е' ||
+                vowelUser === 'ё' ||
+                vowelUser === 'и' ||
+                vowelUser === 'о' ||
+                vowelUser === 'у' ||
+                vowelUser === 'ы' ||
+                vowelUser === 'э' ||
+                vowelUser === 'ю' ||
+                vowelUser === 'я') {
+                return vowelUser
+            }
+        });
+        return filt.length
+    }
+
+    function sumVowelsReduce(str) {
+        let arr = str.toLowerCase().split('');
+        let reduce = arr.reduce(function (per, vowel) {
+            if (vowel === 'а' ||
+                vowel === 'е' ||
+                vowel === 'ё' ||
+                vowel === 'и' ||
+                vowel === 'о' ||
+                vowel === 'у' ||
+                vowel === 'ы' ||
+                vowel === 'э' ||
+                vowel === 'ю' ||
+                vowel === 'я') {
+                return per + 1;
+            }
+            return per
+        }, 0)
+        return reduce
+    }
+
+    alert(`
+    "forEach" RESULT: ${sumVowelsForEach(userStr)}
+    "filter" RESULT: ${sumVowelsFilter(userStr)}
+    "reduce" RESULT: ${sumVowelsReduce(userStr)}
+    `);
+</script>
+</body>
+</html>

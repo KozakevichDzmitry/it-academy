@@ -1,0 +1,126 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <title>HashStorageFunc</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+
+<body>
+<button id="inputDrink" style="display:block; width: 250px; background: transparent; margin-bottom: 5px;">Ввод
+  информации о напитке
+</button>
+<button id="getDrink" style="display:block; width: 250px; background: transparent; margin-bottom: 5px;">Получение
+  информации о
+  напитке
+</button>
+<button id="deleteDrink" style="display:block; width: 250px; background: transparent; margin-bottom: 5px;">Удаление
+  информации о
+  напитке
+</button>
+<button id="allDrink" style="display:block; width: 250px; background: transparent; margin-bottom: 5px;">Перечень всех
+  напитков
+</button>
+
+<script>
+  let inputDrink = document.querySelector('#inputDrink');
+  let veiwDrink = document.querySelector('#getDrink');
+  let deleteDrink = document.querySelector('#deleteDrink');
+  let allDrink = document.querySelector('#allDrink');
+  inputDrink.onclick = setDrink;
+  veiwDrink.onclick = showDrink;
+  deleteDrink.onclick = delDrink;
+  allDrink.onclick = showAllDrink;
+  let drinkStorage = new HashStorageFunc()
+
+  function HashStorageFunc() {
+    let self = this;
+    let obj = {};
+    self.addValue = function (key, value) {
+      obj[key] = value;
+    }
+    self.getValue = function (key) {
+      return obj[key];
+    }
+    self.deleteValue = function (key) {
+      if (key in obj) {
+        return delete obj[key];
+      } else {
+        return false;
+      }
+    }
+    self.getKeys = function () {
+      let arr = [];
+      for (let key in obj) {
+        arr.push(key);
+      }
+      return arr
+    }
+  }
+
+  function askQuestion(question) {
+    let answer = prompt(question);
+    while (!answer) {
+      if (answer == null) break;
+      else if (!answer) answer = prompt(question);
+    }
+    return answer
+  }
+
+  function setDrink() {
+    let objDrink = {};
+    let nameDrink = askQuestion('Введите название напитка.');
+    if(nameDrink === null) return false;
+    let alcoholic = (confirm('Это алькогольный напиток? Если нет, то нажите "отмена"')) ? 'Да' : 'Нет';
+    let recipe = askQuestion('Напишите рецепт напитка.');
+    if(recipe === null) return false;
+    objDrink.recipeDrink = recipe;
+    objDrink.alcoholicDrink = alcoholic;
+    drinkStorage.addValue(nameDrink, objDrink);
+
+  }
+
+  function showDrink() {
+    let nameDrink = askQuestion('Введите название напитка.');
+    if(nameDrink === null) return false;
+    let objDrink = drinkStorage.getValue(nameDrink);
+    if (objDrink) {
+      let str = `
+    Напиток ${nameDrink}
+    Алкогольный: ${objDrink.alcoholicDrink}
+    Рецепт приготовления: ${objDrink.recipeDrink}`;
+      return alert(str);
+    } else return alert('Такой напиток не найден!');
+  }
+
+  function delDrink() {
+    let nameDrink = askQuestion('Введите название напитка.');
+    if(nameDrink === null) return false;
+    let del = drinkStorage.deleteValue(nameDrink);
+    alert(del ? "Удален" : "Не найден");
+  }
+
+  function showAllDrink() {
+    let arr = drinkStorage.getKeys();
+    if (arr.length !== 0) {
+      let str;
+      for (let i = 0; i < arr.length; i++) {
+        if (str) {
+          str += `название ${arr[i]}\n`;
+        } else {
+          str = `название ${arr[i]}\n`;
+        }
+      }
+      alert(str);
+    } else alert('У Вас нет напитков.');
+  }
+
+
+</script>
+
+</body>
+
+</html>

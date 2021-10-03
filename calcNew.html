@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+    <title>Document</title>
+</head>
+<body>
+<p>-2+(2*5)</p>
+<script>
+    "use strict";
+
+    function calc(str) {
+        let exp = str.replace(/\s/g, '');
+
+        function calcSimpl(numA, numB, symb) {
+            let a = numA * Math.pow(10, 15);
+            let b = numB * Math.pow(10, 15);
+            let result;
+            if (symb === '*') {
+                result = a * b / Math.pow(10, 15) / Math.pow(10, 15);
+            } else if (symb === '/') {
+                result = a / b;
+            } else if (symb === '+') {
+                result = (a + b) / Math.pow(10, 15);
+            } else if (symb === '-') {
+                result = (a - b) / Math.pow(10, 15);
+            }
+
+            return +result.toFixed(15)
+        }
+
+        function seachNumA(indexStart) {
+            let num = '';
+            for (let i = indexStart - 1; i >= 0; i--) {
+                if (!isNaN(exp[i])) {
+                    num += exp[i];
+                } else if (exp[i] === '.') {
+                    num += exp[i];
+                }else if (exp[i] === '-') {
+                    num += exp[i];
+                } else {
+                    break
+                }
+            }
+            return num.split('').reverse().join('')
+        }
+
+        function seachNumB(indexStart) {
+            let num = '';
+            for (let i = indexStart + 1; i < exp.length; i++) {
+                if (!isNaN(exp[i])) {
+                    num += exp[i];
+                } else if (exp[i] === '.') {
+                    num += exp[i];
+                }else if (exp[i] === '-') {
+                    num += exp[i];
+                } else {
+                    break
+                }
+            }
+            return num
+        }
+
+        function reductionExp() {
+            let numA;
+            let numB;
+            if (!isFinite(exp)) {
+
+                if (exp.indexOf('*') !== -1 || exp.indexOf('/') !== -1) {
+
+                    for (let i = 0; i < exp.length; i++) {
+                        if (exp[i] === '*') {
+                            numA = seachNumA(i);
+                            numB = seachNumB(i);
+                            exp = exp.replace(numA + '*' + numB, calcSimpl(numA, numB, '*'));
+                            break
+                        } else if (exp[i] === '/') {
+                            numA = seachNumA(i);
+                            numB = seachNumB(i);
+                            exp = exp.replace(numA + '/' + numB, calcSimpl(numA, numB, '/'));
+                            break
+                        }
+                    }
+
+                } else if (exp.indexOf('+') !== -1 || exp.indexOf('-') !== -1) {
+
+                    for (let i = 0; i < exp.length; i++) {
+                        if (exp[i] === '+') {
+                            numA = +seachNumA(i);
+                            numB = +seachNumB(i);
+                            exp = exp.replace(numA + '+' + numB, calcSimpl(numA, numB, '+'));
+                            if (numA === '') continue;
+                            break
+                        } else if (exp[i] === '-') {
+
+                            numA = seachNumA(i);
+                            numB = seachNumB(i);
+                            exp = exp.replace(numA + '-' + numB, calcSimpl(numA, numB, '-'));
+                            if (numA === '') continue;
+                            break
+                        } else if (isNaN(exp[i])) {
+                            alert(exp[i])
+                        }
+                    }
+                }
+                reductionExp()
+            }
+        }
+
+        if (exp.indexOf('(') !== -1) {
+            for (let i = 0; i < exp.length; i++) {
+                if (exp[i] === '(') {
+                    let start = exp.indexOf('(');
+                    let end = exp.indexOf(')');
+                    exp = exp.replace(exp.slice(start, end + 1), calc(exp.slice(start + 1, end)));
+                }
+            }
+        }
+        if (!isFinite(exp)) {
+            reductionExp();
+        }
+        return exp
+    }
+
+    console.log(calc("-2+(2*5)"));
+</script>
+
+</body>
+</html>

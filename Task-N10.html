@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>N10</title>
+</head>
+<body>
+
+
+
+<script>
+
+    "use strict";
+
+    function randomDiap(n,m) {
+      return Math.floor(Math.random()*(m-n+1))+n;
+    }
+    function mood(colorsCount) {
+      var colors=[ '', 'красный', 'оранжевый', 'жёлтый', 'зелёный', 'голубой', 'синий', 'фиолетовый' ];
+      console.log( 'цветов: ' + colorsCount );
+      let objColors = {};
+      let objColorsLength = 0;
+      while (objColorsLength != colorsCount){
+        var n = randomDiap(1,7);
+        if(!(colors[n] in objColors)){
+          objColorsLength ++;
+        }
+        objColors[colors[n]] = true;
+      }
+      for(let key in objColors){
+        console.log(key);
+      }
+    }
+
+    mood(3);
+
+</script>
+</body>
+</html>

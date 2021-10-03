@@ -1,0 +1,261 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fafafa">
+  <!-- добавим стили mocha для отображения результатов -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.2.0/mocha.css">
+  <!-- добавляем сам фреймворк mocha -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.2.0/mocha.js"></script>
+  <script>
+    // включаем режим тестирования в стиле BDD
+    mocha.setup('bdd');
+  </script>
+  <!-- добавим chai -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/3.5.0/chai.js"></script>
+  <script>
+    // chai предоставляет большое количество функций. Объявим assert глобально
+    let assert = chai.assert;
+
+
+  </script>
+  <title></title>
+</head>
+
+<body>
+
+<script>
+
+  "use strict";
+
+  function deepCopy(e) {
+    function arrCopy(array) {
+      let arr = [];
+      for (var i = 0; i < array.length; i++) {
+        if (Array.isArray(array[i])) {
+          arr[i] = arrCopy(array[i]);
+        } else if (array[i] === null) {
+          arr[i] = null;
+        } else if (typeof array[i] === 'object') {
+          arr[i] = objCopy(array[i]);
+        } else {
+          arr[i] = array[i];
+        }
+      }
+      return arr
+    }
+
+    function objCopy(object) {
+      let obj = {};
+      for (let key in object) {
+        if (Array.isArray(object[key])) {
+          obj[key] = arrCopy(object[key])
+        } else if (object[key] === null) {
+          obj[key] = null;
+        } else if (typeof object[key] === 'object') {
+          obj[key] = deepCopy(object[key]);
+        } else {
+          obj[key] = object[key];
+        }
+      }
+      return obj
+    }
+
+    if (Array.isArray(e)) {
+      return arrCopy(e)
+    } else if (e === null) {
+      return null
+    } else if (typeof e === 'object') {
+      return objCopy(e)
+    } else {
+      return e
+    }
+
+  }
+  // Тесты в консоле
+/*
+  var h1 = {a: 5, b: {b1: 6, b2: 7}, c: [33, 22], d: null, e: undefined, f: Number.NaN};
+  let h2 = deepCopy(h1)
+  console.log(!(h1 === h2) ? "прошёл" : "НЕ ПРОШЁЛ")
+  console.log(h1.a === h2.a ? "прошёл" : "НЕ ПРОШЁЛ")
+  console.log(!(h1.b === h2.b) ? "прошёл" : "НЕ ПРОШЁЛ")
+  console.log(h1.b.b1 === h2.b.b1 ? "прошёл" : "НЕ ПРОШЁЛ")
+  console.log(!(h1.c === h2.c) ? "прошёл" : "НЕ ПРОШЁЛ")
+  console.log(h1.c[0] === h2.c[0] ? "прошёл" : "НЕ ПРОШЁЛ")
+  console.log(h1.d === h2.d ? "прошёл" : "НЕ ПРОШЁЛ")
+  console.log(h1.e === h2.e ? "прошёл" : "НЕ ПРОШЁЛ")
+  console.log(isNaN(h2.f) ? "прошёл" : "НЕ ПРОШЁЛ")
+  console.log(h2.c instanceof Array ? "прошёл" : "НЕ ПРОШЁЛ")
+
+  var a1 = [5, {b1: 6, b2: 7}, [33, 22], null, undefined, Number.NaN];
+  var a2 = deepCopy(a1);
+  console.log(!(a1 === a2) ? "прошёл" : "НЕ ПРОШЁЛ")
+  console.log(typeof (a2) === typeof (a1) ? "прошёл" : "НЕ ПРОШЁЛ")
+  console.log(a1[0] === a2[0] ? "прошёл" : "НЕ ПРОШЁЛ")
+  console.log(!(a1[1] === a2[1]) ? "прошёл" : "НЕ ПРОШЁЛ")
+  console.log(a1[1].b1 === a2[1].b1 ? "прошёл" : "НЕ ПРОШЁЛ")
+  console.log(!(a1[2] === a2[2]) ? "прошёл" : "НЕ ПРОШЁЛ")
+  console.log(a1[2][0] === a2[2][0] ? "прошёл" : "НЕ ПРОШЁЛ")
+  console.log(a1[3] === a2[3] ? "прошёл" : "НЕ ПРОШЁЛ")
+  console.log(a1[4] === a2[4] ? "прошёл" : "НЕ ПРОШЁЛ")
+  console.log(isNaN(a2[5]) ? "прошёл" : "НЕ ПРОШЁЛ")
+  console.log(a2[2] instanceof Array ? "прошёл" : "НЕ ПРОШЁЛ")
+
+  var v1 = "sss";
+  var v2 = deepCopy(v1);
+  console.log(typeof (v2) === typeof (v1) ? "прошёл" : "НЕ ПРОШЁЛ")
+  console.log(v1 === v2 ? "прошёл" : "НЕ ПРОШЁЛ")
+
+  var z1 = null;
+  var z2 = deepCopy(z1);
+  console.log(typeof (z2) === typeof (z1) ? "прошёл" : "НЕ ПРОШЁЛ")
+  console.log(z1 === z2 ? "прошёл" : "НЕ ПРОШЁЛ")
+
+  var n1 = Number.NaN;
+  var n2 = deepCopy(n1);
+  console.log(typeof (n2) === typeof (n1) ? "прошёл" : "НЕ ПРОШЁЛ")
+  console.log(isNaN(n2) ? "прошёл" : "НЕ ПРОШЁЛ")*/
+
+
+</script>
+
+<!-- скрипт со спецификацией (describe, it...) -->
+<script>
+
+  describe("h1 = {a: 5, b: {b1: 6, b2: 7}, c: [33, 22], d: null, e: undefined, f: Number.NaN};\n" +
+    "       h2 = deepCopy(h1);", function () {
+    let h1 = {a: 5, b: {b1: 6, b2: 7}, c: [33, 22], d: null, e: undefined, f: Number.NaN};
+    let h2 = deepCopy(h1);
+    it('h2 !== h1', function () {
+      assert.notStrictEqual(h2, h1);
+    });
+    it('h2.a === h1.a', function () {
+      assert.strictEqual(h2.a, h1.a);
+    });
+    it('h2.b !== h2.b', function () {
+      assert.notStrictEqual(h2.b, h1.b);
+    });
+    it('h2.b.b1 === h2.b.b1', function () {
+      assert.strictEqual(h2.b.b1, h1.b.b1);
+    });
+    it('h2.c !== h2.c', function () {
+      assert.notStrictEqual(h2.c, h1.c);
+    });
+    it('h2.c[0] === h2.c[0]', function () {
+      assert.strictEqual(h2.c[0], h1.c[0]);
+    });
+    it('h2.d === h2.d', function () {
+      assert.strictEqual(h2.d, h1.d);
+    });
+    it('h2.e === h2.e', function () {
+      assert.strictEqual(h2.e, h1.e);
+    });
+    it('isNaN(h2.f)', function () {
+      assert.isNaN(h2.f);
+    });
+    it('h2.c instanceof Array', function () {
+      assert.isArray(h2.c);
+    });
+
+  });
+
+  describe("a1=[ 5, {b1:6,b2:7}, [33,22], null, undefined, Number.NaN]/n" +
+    " a2=deepCopy(a1)", function () {
+    let a1 = [5, {b1: 6, b2: 7}, [33, 22], null, undefined, Number.NaN];
+    let a2 = deepCopy(a1);
+
+    it('a1 !== a2', function () {
+      assert.notStrictEqual(a2, a1);
+    });
+    it('typeof(a2)===typeof(a1)', function () {
+      assert.strictEqual(typeof (a2), typeof (a1));
+    });
+    it('a1[0]===a2[0]', function () {
+      assert.strictEqual(a1[0], a2[0]);
+    });
+    it('a1[0]===a2[0]', function () {
+      assert.notStrictEqual(a1[1],a2[1]);
+    });
+    it('a1[0]!==a2[0]', function () {
+      assert.notStrictEqual(a1[1],a2[1]);
+    });
+    it('a1[1].b1===a2[1].b1', function () {
+      assert.strictEqual(a1[1].b1,a2[1].b1);
+    });
+    it('a1[2]!==a2[2]', function () {
+      assert.notStrictEqual(a1[2],a2[2]);
+    });
+    it('a1[2][0]===a2[2][0]', function () {
+      assert.strictEqual(a1[2][0],a2[2][0]);
+    });
+    it('a1[3]===a2[3]', function () {
+      assert.strictEqual(a1[3],a2[3]);
+    });
+    it('a1[4]===a2[4]', function () {
+      assert.strictEqual(a1[4],a2[4]);
+    });
+    it('isNaN(a2[5])', function () {
+      assert.isNaN(a2[5]);
+    });
+    it('a2[2] instanceof Array', function () {
+      assert.instanceOf(a2[2],Array);
+    });
+
+  });
+
+  describe("v1 = 'sss'/n" +
+    " v2 = deepCopy(v1)", function () {
+    let v1='sss';
+    let v2=deepCopy(v1);
+
+    it('typeof(v2)===typeof(v1)', function () {
+      assert.strictEqual(typeof(v2),typeof(v1));
+    });
+    it('v1===v2', function () {
+      assert.strictEqual(v1,v2);
+    })
+  });
+
+  describe("z1 = null/n" +
+    " z2 = deepCopy(z1)", function () {
+    let z1=null;
+    let z2=deepCopy(z1);
+
+    it('typeof(z2)===typeof(z1)', function () {
+      assert.strictEqual(typeof(z2),typeof(z1));
+    });
+    it('z1===z2', function () {
+      assert.strictEqual(z1,z2);
+    })
+  });
+
+  describe("n1=Number.NaN/n" +
+    " n2 = deepCopy(z1)", function () {
+    let n1=Number.NaN;
+    let n2=deepCopy(n1);
+
+    it('typeof(n2)===typeof(n1)', function () {
+      assert.strictEqual(typeof(n2),typeof(n1));
+    });
+    it('isNaN(n2)', function () {
+      assert.isNaN(n2);
+    })
+  });
+
+
+
+</script>
+
+<!-- элемент с id="mocha" будет содержать результаты тестов -->
+<div id="mocha"></div>
+
+<!-- запускаем тесты! -->
+<script>
+  mocha.run();
+</script>
+</body>
+</html>

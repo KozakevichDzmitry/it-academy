@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>dellGaps</title>
+</head>
+<body>
+
+
+
+<script>
+	"use strict";
+  let userStr = prompt("Введите строку");
+  function dellGaps(str){
+    let start= 0; // начало строки без пробелов
+    let end = str.length; // конец строки без пробелов
+    for (var i = 0; i < str.length; i++) {  //вычисление пробелов в начале строки
+      if(str[i] === " "){
+        start += 1;
+        console.log('пробел в начале строки')
+      }else{
+        console.log('нет пробела в начале строки') 
+        break
+      }
+    }
+    if(start === str.length){ //если строка состоит только из пробелов вернуть пустую строку
+      console.log('строка состоит только из пробелов')
+      return ''
+    }
+    for (var i = str.length - 1; i >= 0; i--) {  // вычисление пробелов в конце строки
+      if(str[i] === " "){
+        console.log('пробел в конце строки')
+        end -= 1;
+      }else{
+        console.log('нет пробела в конце строки')
+        break
+      }
+    }
+    if(start === 0 && end === str.length){ // возврат строки если в ней не было пробелов
+      console.log('в строке не было пробелов')
+      return str
+    }
+    return str.slice(start, end) // возврат строки без пробелов 
+  }
+  alert('|' + dellGaps(userStr) + '|');
+
+</script>
+</body>
+</html>

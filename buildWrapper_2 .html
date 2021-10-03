@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>deepComp</title>
+</head>
+<body>
+
+
+
+<script>
+	"use strict";
+var H1={ a:5, b: { b1:6, b2:7 } };
+var H2={ b: { b1:6, b2:7 }, a:5 };
+var H3={ a:5, b: { b1:6 } };
+var H4={ a:5, b: { b1:66, b2:7 } };
+var H5={ a:5, b: { b1:6, b2:7, b3:8 } };
+var H6={ a:null, b:undefined, c:Number.NaN };
+var H7={ c:Number.NaN, b:undefined, a:null };
+var H8={a:5,b:6};
+var H9={c:5,d:6};
+var H10={a:5};
+var A1=[5,7];
+var A2=[5,5,7];
+var A3=[5,8,7];
+function deepComp(a, b){
+  function compare(a, b){
+    if(Array.isArray(a) && Array.isArray(b) || typeof a === 'object' && typeof b === 'object' && a !== null && b !== null){
+      if(Array.isArray(a)!==Array.isArray(b)) return false;
+      for(let key in a){
+        if(Array.isArray(a[key]) && Array.isArray(b[key]) || typeof a[key] === 'object' && typeof b[key] === 'object'){
+          if(!compare(a[key], b[key])) return false;
+        }else if(a[key]!==a[key] && b[key]!==b[key]){
+          continue;
+        }else{
+          if(!(key in a) || !(key in b)) return false;
+          if(a[key] !== b[key]) return false; 
+        }
+      }
+      return true;
+    }else if(a!==a && b!==b){
+      return true;
+    }else{
+      if(a !== b)return false;
+    }
+    return true;
+  } 
+ return (compare(a, b) && compare(b, a))? true:false;
+}
+
+
+console.log('(H1,H2) будет true');
+console.log(deepComp(H1,H2));
+
+console.log('(H1,H3) будет false');
+console.log(deepComp(H1,H3));
+
+console.log('(H1,H4) будет false');
+console.log(deepComp(H1,H4));
+
+console.log('(H1,H5) будет false');
+console.log(deepComp(H1,H5));
+
+console.log('(H6,H7) будет true');
+console.log(deepComp(H6,H7));
+
+console.log('(H8,H9) будет false');
+console.log(deepComp(H8,H9));
+
+console.log('(H8,H10) будет false');
+console.log(deepComp(H8,H10));
+
+console.log('(null,H10) будет false');
+console.log(deepComp(null,H10));
+
+console.log('(H10,null) будет false');
+console.log(deepComp(H10,null));
+
+console.log('(null,null) будет true');
+console.log(deepComp(null,null));
+
+console.log('(null,undefined) будет false');
+console.log(deepComp(null,undefined));
+
+console.log('(5,"5") будет false');
+console.log(deepComp(5,"5"));
+
+console.log('(5,H1) будет false');
+console.log(deepComp(5,H1));
+
+console.log('(A1,H1) будет false');
+console.log(deepComp(A1,H1));
+
+console.log('(A2,A3) будет false');
+console.log(deepComp(A2,A3));
+
+console.log('( {a:5,b:undefined}, {a:5,c:undefined} ) будет false');
+console.log(deepComp( {a:5,b:undefined}, {a:5,c:undefined} ));
+
+console.log('([5,7],{0:5,1:7}) будет false');
+console.log(deepComp([5,7],{0:5,1:7}));
+
+console.log('( [5,7],{0:5,1:7,length:2} ) будет false');
+console.log(deepComp( [5,7],{0:5,1:7,length:2} ));
+
+console.log('("aaa","bbb") будет false');
+console.log(deepComp("aaa","bbb"));
+
+console.log('(Number.NaN,Number.NaN) будет true');
+console.log(deepComp(Number.NaN,Number.NaN));
+
+
+
+</script>
+</body>
+</html>

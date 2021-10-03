@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>deepComp</title>
+</head>
+<body>
+
+
+
+<script>
+  "use strict";
+var H1={ a:5, b: { b1:6, b2:7 } };
+var H2={ b: { b1:6, b2:7 }, a:5 };
+var H3={ a:5, b: { b1:6 } };
+var H4={ a:5, b: { b1:66, b2:7 } };
+var H5={ a:5, b: { b1:6, b2:7, b3:8 } };
+var H6={ a:null, b:undefined, c:Number.NaN };
+var H7={ c:Number.NaN, b:undefined, a:null };
+var H8={a:5,b:6};
+var H9={c:5,d:6};
+var H10={a:5};
+var A1=[5,7];
+var A2=[5,5,7];
+var A3=[5,8,7];
+function deepComp(a, b){
+  if(Array.isArray(a)){
+    if(Array.isArray(a) !== Array.isArray(b)) return false;
+    if(a.length !== b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if(!deepComp(a[i], b[i])) return false;
+    }
+  }else if(typeof a === 'object' && typeof b === 'object' && a !== null && b !== null){
+    if(Array.isArray(b)){
+      return false;
+    }else if(Object.keys(a).length !== Object.keys(b).length)return false;
+    for(let key in a){
+      if(!(key in b)) return false;
+      if(!deepComp(a[key], b[key])) return false;
+    }
+  }else if(a!==a && b!==b){
+    return true;
+  }else{
+    if(a !== b) return false;
+  }
+  return true;
+}
+ 
+
+console.log(deepComp(H1,H2)? "прошёл":"НЕ ПРОШЁЛ");
+console.log(!deepComp(H1,H3)? "прошёл":"НЕ ПРОШЁЛ");
+console.log(!deepComp(H1,H4)? "прошёл":"НЕ ПРОШЁЛ");
+console.log(!deepComp(H1,H5)? "прошёл":"НЕ ПРОШЁЛ");
+console.log(deepComp(H6,H7)? "прошёл":"НЕ ПРОШЁЛ");
+console.log(!deepComp(H8,H9)? "прошёл":"НЕ ПРОШЁЛ");
+console.log(!deepComp(H8,H10)? "прошёл":"НЕ ПРОШЁЛ");
+console.log(!deepComp(null,H10)? "прошёл":"НЕ ПРОШЁЛ");
+console.log(!deepComp(H10,null)? "прошёл":"НЕ ПРОШЁЛ");
+console.log(deepComp(null,null)? "прошёл":"НЕ ПРОШЁЛ");
+console.log(!deepComp(null,undefined)? "прошёл":"НЕ ПРОШЁЛ");
+console.log(!deepComp(5,"5")? "прошёл":"НЕ ПРОШЁЛ");
+console.log(!deepComp(5,H1)? "прошёл":"НЕ ПРОШЁЛ");
+console.log(!deepComp(A1,H1)? "прошёл":"НЕ ПРОШЁЛ");
+console.log(!deepComp(A2,A3)? "прошёл":"НЕ ПРОШЁЛ");
+console.log(!deepComp({a:5,b:undefined}, {a:5,c:undefined})? "прошёл":"НЕ ПРОШЁЛ");
+console.log(!deepComp([5,7],{0:5,1:7})? "прошёл":"НЕ ПРОШЁЛ");
+console.log(!deepComp( [5,7],{0:5,1:7,length:2} )? "прошёл":"НЕ ПРОШЁЛ");
+console.log(!deepComp("aaa","bbb")? "прошёл":"НЕ ПРОШЁЛ");
+console.log(deepComp(Number.NaN,Number.NaN)? "прошёл":"НЕ ПРОШЁЛ");
+console.log(!deepComp({0:5},[5])? "прошёл":"НЕ ПРОШЁЛ");
+
+</script>
+</body>
+</html>

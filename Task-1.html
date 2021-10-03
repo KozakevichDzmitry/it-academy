@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Task 1</title>
+</head>
+<body>
+	
+<script>
+	"use strict";
+	let surname= getUserName('Введите Вашу фамилию.');
+	let name = getUserName('Введите Ваше имя.');
+	let patronymic = getUserName('Введите Ваше отчество.');
+	let age = getUserAge();
+	let gender;
+	let retirementAge;
+	function setGenderUser(){
+		let genderUser = confirm('Ваш пол мужской? Если нет, то нажмите "отмена".');
+		if(genderUser){
+			gender = 'мужской';
+			if(age >= 62){
+				retirementAge = 'да';
+			}else if(age <= 62){
+				retirementAge = 'нет';
+			}
+		}else{
+			gender = 'женский';
+			if(age >= 57){
+				retirementAge = 'да';
+			}else if(age <= 57){
+				retirementAge = 'нет';
+			}	
+		}
+	}
+	function getUserName(text){
+		let userName = prompt(text);
+		let check = true;
+		while (check){
+			if(userName ==='' || userName === null || userName.match(/[0-9,~,!,@,#,$,%,^,&,*,(,),{,},[,\],;,:,',`,",.,?,/,\,,<,>,_,+,=,\\,\|]/) !== null ){
+				alert('Введены недопустимые симвлы.');
+				userName = prompt(text);
+			}else{
+				userName = userName.replace(/\s/g, '');
+				check = false;
+			}	
+		}
+		return userName
+	}
+	function getUserAge(){
+		let userAge = prompt('Сколько Вам лет?');
+		let check = true;
+		while (check){
+			if(userAge === '' || isNaN(userAge) || userAge <= 0 || userAge > 120){
+				alert('Недопустимое значение. Введите Ваш возраст цифрами.');
+				userAge = prompt('Сколько Вам лет?');
+			}else{
+				check = false;
+			}
+		}
+		return Number(userAge)
+	}
+	function veiwResult(){
+		alert(`Ваше ФИО: ${surname} ${name} ${patronymic}
+Ваш возраст в годах: ${age}
+Ваш возраст  в днях: ${age*365}
+Через пять лет Вам будет: ${age+5}
+Ваш пол: ${gender}
+Вы на пернсии: ${retirementAge}`)
+	}
+	setGenderUser();
+	veiwResult();
+
+</script>
+</body>
+</html>
