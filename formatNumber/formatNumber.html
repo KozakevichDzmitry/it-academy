@@ -1,0 +1,98 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fafafa">
+  <!-- добавим стили mocha для отображения результатов -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.2.0/mocha.css">
+  <!-- добавляем сам фреймворк mocha -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.2.0/mocha.js"></script>
+  <script>
+    // включаем режим тестирования в стиле BDD
+    mocha.setup('bdd');
+  </script>
+  <!-- добавим chai -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/3.5.0/chai.js"></script>
+  <script>
+    // chai предоставляет большое количество функций. Объявим assert глобально
+    let assert = chai.assert;
+    document
+
+  </script>
+  <title></title>
+</head>
+
+<body>
+
+<script>
+
+  "use strict";
+
+  function formatNumber(number, formatNumber) {
+    let format = formatNumber.split('.');
+    let formatLeftPartNum = format[0];
+    let formatRightPartNum = format[1];
+    let num = number.toString().split('.');
+    let leftPartNum = num[0].split('').reverse();
+    let rightPartNum;
+    if (!num[1]) num.push('0');
+    rightPartNum = num[1] / Math.pow(10, num[1].length);
+    rightPartNum = rightPartNum.toFixed(formatRightPartNum.length) * Math.pow(10, formatRightPartNum.length);
+    rightPartNum = rightPartNum.toString().split('');
+    formatLeftPartNum = formatLeftPartNum.split('').reverse();
+    formatRightPartNum=formatRightPartNum.split('');
+    for (let i = 0; i < formatLeftPartNum.length; i++) {
+      if (leftPartNum[0]) {
+        if (formatLeftPartNum[i] === '#') {
+          formatLeftPartNum[i] = leftPartNum[0];
+          leftPartNum.shift();
+        }
+      } else {
+        formatLeftPartNum[i] = '';
+      }
+    }
+    for (let i = 0; i < formatRightPartNum.length; i++) {
+      if (formatRightPartNum[i] === '#') {
+        if (rightPartNum[0]) {
+          formatRightPartNum[i] = rightPartNum[0];
+          rightPartNum.shift();
+        } else {
+          formatRightPartNum[i] = '0';
+        }
+      }
+    }
+    formatLeftPartNum = formatLeftPartNum.reverse().join('');
+    formatRightPartNum = formatRightPartNum.join('');
+    return `${formatLeftPartNum}.${formatRightPartNum}`
+  }
+
+
+</script>
+
+<!--скрипт со спецификацией (describe, it...)-->
+<script>
+  describe(`Формотирование чисел`, function () {
+    it('2.3 => формат: "# ### ###.##"', function () {
+      assert.strictEqual(formatNumber(2.3, "# ### ###.##"), "2.30");
+    });
+    it('12345.368 => формат: "# ### ###.##"', function () {
+      assert.strictEqual(formatNumber(12345.368, "# ### ###.##"), "12 345.37");
+    });
+  });
+
+
+</script>
+
+
+<div id="mocha"></div>
+
+<!-- запускаем тесты! -->
+<script>
+  mocha.run();
+</script>
+</body>
+</html>
