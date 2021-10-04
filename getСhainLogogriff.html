@@ -1,0 +1,110 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fafafa">
+  <!-- добавим стили mocha для отображения результатов -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.2.0/mocha.css">
+  <!-- добавляем сам фреймворк mocha -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.2.0/mocha.js"></script>
+  <script>
+    // включаем режим тестирования в стиле BDD
+    mocha.setup('bdd');
+  </script>
+  <!-- добавим chai -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/3.5.0/chai.js"></script>
+  <script>
+    // chai предоставляет большое количество функций. Объявим assert глобально
+    let assert = chai.assert;
+    document
+
+  </script>
+  <title></title>
+</head>
+
+<body>
+
+<script>
+
+  "use strict";
+  let arr1 = ["ЛУЖА", "МУЗА", "ЛИРА", "МЕХА", "ЛИГА", "ТАРА", "ЛИПА", "ТУРА", "ПАРК", "ЛОЖЬ", "ЛУПА", "ПЛОТ", "МУРА",
+    "ПАУК", "ПАУТ", "ПЛУТ", "ЛОЖА", "СЛОТ", "ПАРА"];
+
+
+  function getСhainLogogriff(strFrom, strTo, dictionary) {
+    let arr = dictionary.slice(0);
+    arr.push(strTo);
+    let letters = {};
+    let arrLogogriff = [];
+    for (let i = 0; i < arr.length; i++) {
+      let a = arr[i];
+      for (let j = 0; j < a.length; j++) {
+        if (!(j in letters)) letters[j] = {};
+        let letter = a[j];
+        letters[j][letter] = true;
+      }
+    }
+    function searchLogogriff(start) {
+      arrLogogriff.push(start)
+      let logogriffWords = [];
+      for (let i = 0; i < start.length; i++) {
+        for (const key in letters[i]) {
+          let word = start.slice(0, i) + key + start.slice(i + 1);
+          if (strTo === word) {
+            arrLogogriff.push(strTo);
+            return true
+          }
+          let index = arr.indexOf(word);
+          if (index >= 0) {
+            logogriffWords.push(word);
+            arr.splice(index, 1);
+          }
+        }
+      }
+      if (logogriffWords.length) {
+        for (let elem of logogriffWords) {
+          searchLogogriff(elem)
+        }
+      } else {
+        arrLogogriff.pop(start)
+      }
+    }
+
+    searchLogogriff(strFrom);
+    return arrLogogriff.join('-');
+  }
+  
+</script>
+
+<!-- скрипт со спецификацией (describe, it...) -->
+<script>
+  let arr = ["ЛУЖА", "МУЗА", "ЛИРА", "МЕХА", "ЛИГА", "ТАРА", "ЛИПА", "ТУРА", "ПАРК", "ЛОЖЬ", "ЛУПА", "ПЛОТ", "МУРА", "ПАУК", "ПАУТ", "ПЛУТ", "ЛОЖА", "СЛОТ", "ПАРА"]
+
+  describe(`Цепочка слов из словоря ${arr}`, function () {
+    it('ЛИСА => ЛОСЬ', function () {
+      assert.strictEqual(getСhainLogogriff("ЛИСА", "ЛОСЬ", arr), "ЛИСА-ЛИПА-ЛУПА-ЛУЖА-ЛОЖА-ЛОЖЬ-ЛОСЬ");
+    });
+  });
+
+  describe(`Цепочка слов из словоря ${arr}`, function () {
+    it('МУХА => СЛОН', function () {
+      assert.strictEqual(getСhainLogogriff("МУХА", "СЛОН", arr), "МУХА-МУРА-ТУРА-ТАРА-ПАРА-ПАРК-ПАУК-ПАУТ-ПЛУТ-ПЛОТ-СЛОТ-СЛОН");
+    });
+  });
+
+
+</script>
+
+<!-- элемент с id="mocha" будет содержать результаты тестов -->
+<div id="mocha"></div>
+
+<!-- запускаем тесты! -->
+<script>
+  mocha.run();
+</script>
+</body>
+</html>
