@@ -1,0 +1,76 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#fafafa">
+    <!-- добавим стили mocha для отображения результатов -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.2.0/mocha.css">
+    <!-- добавляем сам фреймворк mocha -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.2.0/mocha.js"></script>
+    <script>
+        // включаем режим тестирования в стиле BDD
+        mocha.setup('bdd');
+    </script>
+    <!-- добавим chai -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/3.5.0/chai.js"></script>
+    <script>
+        // chai предоставляет большое количество функций. Объявим assert глобально
+        let assert = chai.assert;
+
+
+    </script>
+    <title></title>
+</head>
+
+<body>
+
+<script>
+
+    "use strict";
+
+    function mulFabric(numA) {
+        return function (numB) {
+            return numA*numB
+        }
+    }
+
+    var mul5=mulFabric(5);  // получаем функцию для умножения на 5
+    console.log( mul5(3) );  // вызываем эту функцию, чтобы она умножила 3 на 5, выводит 15
+    console.log( mul5(4) );  // вызываем эту функцию, чтобы она умножила 4 на 5, выводит 20
+    var mul7=mulFabric(7);  // получаем функцию для умножения на 7
+    console.log( mul7(10) )  // вызываем эту функцию, чтобы она умножила 10 на 7, выводит 70
+
+    console.log(mulFabric(7)(10)) //без лишне переменной
+</script>
+
+<!--скрипт со спецификацией (describe, it...)-->
+<script>
+    describe(`Функция умножения`, function () {
+        it('5*3', function () {
+            assert.strictEqual(mul5(3), 15);
+        });
+        it('5*4', function () {
+            assert.strictEqual(mul5(4), 20);
+        });
+        it('7*10', function () {
+            assert.strictEqual(mul7(10), 70);
+        });
+
+    });
+
+
+</script>
+
+
+<div id="mocha"></div>
+
+<!-- запускаем тесты! -->
+<script>
+    mocha.run();
+</script>
+</body>
+</html>
