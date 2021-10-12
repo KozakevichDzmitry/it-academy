@@ -11,6 +11,7 @@
 
 <body>
 
+
 <div id="block_form_1"></div>
 <hr>
 <div id="block_form_2"></div>
@@ -87,13 +88,15 @@
                 } else if (arr[i].kind === 'radio') {
                     for (let key of arr[i].variants) {
                         let input = document.createElement('input');
-                        let text = document.createTextNode(arr[i].label)
+                        let labelRadio = document.createElement('label');
+                        labelRadio.textContent = key.text;
+                        labelRadio.setAttribute('for', `${arr[i].name}${key.value}`);
                         input.setAttribute('type', 'radio')
                         input.setAttribute('value', key.value);
                         input.setAttribute('name', arr[i].name);
-                        input.setAttribute('id', arr[i].name);
+                        input.setAttribute('id', `${arr[i].name}${key.value}`);
                         p.appendChild(input);
-                        p.appendChild(text);
+                        p.appendChild(labelRadio);
                     }
                 }else if (arr[i].kind === 'check') {
                     input.setAttribute('type', 'checkbox')
