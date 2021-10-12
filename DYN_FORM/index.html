@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+
+<body>
+
+<div id="block_form_1"></div>
+<hr>
+<div id="block_form_2"></div>
+<script>
+    var formDef1 =
+        [
+            {label: 'Название сайта:', kind: 'longtext', name: 'sitename'},
+            {label: 'URL сайта:', kind: 'longtext', name: 'siteurl'},
+            {label: 'Посетителей в сутки:', kind: 'number', name: 'visitors'},
+            {label: 'E-mail для связи:', kind: 'shorttext', name: 'email'},
+            {
+                label: 'Рубрика каталога:',
+                kind: 'combo',
+                name: 'division',
+                variants: [{text: 'здоровье', value: 1}, {text: 'домашний уют', value: 2}, {
+                    text: 'бытовая техника',
+                    value: 3
+                }]
+            },
+            {
+                label: 'Размещение:',
+                kind: 'radio',
+                name: 'payment',
+                variants: [{text: 'бесплатное', value: 1}, {text: 'платное', value: 2}, {text: 'VIP', value: 3}]
+            },
+            {label: 'Разрешить отзывы:', kind: 'check', name: 'votes'},
+            {label: 'Описание сайта:', kind: 'memo', name: 'description'},
+            {caption: 'Опубликовать', kind: 'submit'},
+        ];
+    var formDef2 =
+        [
+            {label: 'Фамилия:', kind: 'longtext', name: 'lastname'},
+            {label: 'Имя:', kind: 'longtext', name: 'firstname'},
+            {label: 'Отчество:', kind: 'longtext', name: 'secondname'},
+            {label: 'Возраст:', kind: 'number', name: 'age'},
+            {caption: 'Зарегистрироваться', kind: 'submit'},
+        ];
+
+    let div1 = document.querySelector('#block_form_1')
+    let div2 = document.querySelector('#block_form_2')
+    function dynForm(arr, block) {
+        let form = document.createElement('form');
+        form.setAttribute('action', '#')
+        for (let i = 0; i < arr.length; i++) {
+            let p = document.createElement('p');
+            let input = document.createElement('input');
+            if (arr[i].label) {
+                let label = document.createElement('label');
+                label.setAttribute('for', arr[i].name);
+                label.textContent = arr[i].label;
+                p.appendChild(label);
+                if (arr[i].kind === 'longtext') {
+                    input.setAttribute('type', 'text');
+                    input.setAttribute('id', arr[i].name);
+                    p.appendChild(input);
+                } else if (arr[i].kind === 'shorttext') {
+                    input.setAttribute('type', 'email');
+                    input.setAttribute('id', arr[i].name);
+                    p.appendChild(input);
+                } else if (arr[i].kind === 'number') {
+                    input.setAttribute('type', 'number');
+                    input.setAttribute('id', arr[i].name);
+                    p.appendChild(input);
+                } else if (arr[i].kind === 'combo') {
+                    let select = document.createElement('select');
+                    for (let key of arr[i].variants) {
+                        let option = document.createElement('option');
+                        option.textContent = key.text
+                        option.setAttribute('value', key.value);
+                        select.appendChild(option);
+                    }
+                    select.setAttribute('id', arr[i].name);
+                    p.appendChild(select);
+                } else if (arr[i].kind === 'radio') {
+                    for (let key of arr[i].variants) {
+                        let input = document.createElement('input');
+                        let text = document.createTextNode(arr[i].label)
+                        input.setAttribute('type', 'radio')
+                        input.setAttribute('value', key.value);
+                        input.setAttribute('name', arr[i].name);
+                        input.setAttribute('id', arr[i].name);
+                        p.appendChild(input);
+                        p.appendChild(text);
+                    }
+                }else if (arr[i].kind === 'check') {
+                    input.setAttribute('type', 'checkbox')
+                    input.setAttribute('id', arr[i].name);
+                    p.appendChild(input);
+                }else if (arr[i].kind === 'memo') {
+                    let textarea = document.createElement('textarea');
+                    textarea.setAttribute('name', arr[i].name);
+                    textarea.setAttribute('id', arr[i].name);
+                    p.appendChild(textarea);
+                }
+            } else {
+                 if (arr[i].kind === 'submit') {
+                    input.setAttribute('type', 'submit')
+                    input.setAttribute('value', arr[i].caption);
+                    p.appendChild(input);
+                }
+            }
+            form.appendChild(p);
+        }
+        block.appendChild(form);
+    }
+
+    dynForm(formDef1, div1);
+    dynForm(formDef2, div2);
+</script>
+
+</body>
+
+</html>
