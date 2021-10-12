@@ -87,6 +87,7 @@
                     p.appendChild(select);
                 } else if (arr[i].kind === 'radio') {
                     for (let key of arr[i].variants) {
+                        label.removeAttribute('for');
                         let input = document.createElement('input');
                         let labelRadio = document.createElement('label');
                         labelRadio.textContent = key.text;
@@ -95,8 +96,8 @@
                         input.setAttribute('value', key.value);
                         input.setAttribute('name', arr[i].name);
                         input.setAttribute('id', `${arr[i].name}${key.value}`);
-                        p.appendChild(input);
-                        p.appendChild(labelRadio);
+                        label.appendChild(input);
+                        label.appendChild(labelRadio);
                     }
                 }else if (arr[i].kind === 'check') {
                     input.setAttribute('type', 'checkbox')
