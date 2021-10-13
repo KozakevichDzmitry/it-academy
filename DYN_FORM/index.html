@@ -52,7 +52,7 @@
 
     let div1 = document.querySelector('#block_form_1')
     let div2 = document.querySelector('#block_form_2')
-    function dynForm(arr, block) {
+    function dynForm(arr) {
         let form = document.createElement('form');
         form.setAttribute('action', '#')
         for (let i = 0; i < arr.length; i++) {
@@ -118,11 +118,11 @@
             }
             form.appendChild(p);
         }
-        block.appendChild(form);
+        return form
     }
 
-    dynForm(formDef1, div1);
-    dynForm(formDef2, div2);
+    div1.appendChild(dynForm(formDef1));
+    div2.appendChild(dynForm(formDef2));
 </script>
 
 </body>
