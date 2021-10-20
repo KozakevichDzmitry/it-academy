@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+<style>
+    #description{
+        display: block;
+        width: 200px;
+        height: 100px;
+    }
+</style>
+<div id="block_form_1">
+    <form action="https://fe.it-academy.by/TestForm.php">
+        <p>
+            <label for="developers">Разработчики:</label>
+            <input class="input_text" type="text" id="developers" placeholder="Введите имена через пробелы">
+        </p>
+        <p>
+            <label for="domain">Название сайта:</label>
+            <input class="input_text" type="text" id="domain"
+                   placeholder="Введите от 2 до 63 символов, используя латинский алфавит цифры и дефис">
+        </p>
+        <p>
+            <label for="url">URL сайта:</label>
+            <input class="input_text" type="text" id="url" placeholder='Формат ввода "https://domen.com"'>
+        </p>
+        <p>
+            <label for="startDate">Дата запуска сайта:</label>
+            <input class="input_select" type="date" id="startDate">
+        </p>
+        <p>
+            <label for="visitors">Посетителей в сутки:</label>
+            <input class="input_text" type="number" id="visitors" placeholder="До 999 999 999">
+        </p>
+        <p>
+            <label for="email">E-mail для связи:</label>
+            <input class="input_text" type="email" id="email" placeholder="mailbox@hostname">
+        </p>
+        <p>
+            <label for="division">Рубрика каталога:</label>
+            <select class="input_select" id="division">
+                <option value="1" checked>здоровье</option>
+                <option value="2">домашний уют</option>
+                <option value="3">бытовая техника</option>
+            </select>
+        </p>
+        <p>
+            <label >Размещение:</label>
+            <label><input class="input_select " type="radio" value="1" name="payment" id="payment1"
+                          checked>бесплатное</label>
+            <label><input class="input_select" type="radio" value="2" name="payment" id="payment2">платное</label>
+            <label><input class="input_select" type="radio" value="3" name="payment" id="payment3">VIP</label>
+
+        </p>
+        <p>
+            <label for="votes">Разрешить отзывы:</label>
+            <input class="input_select" type="checkbox" id="votes">
+        </p>
+        <p>
+            <label for="description">Описание сайта:</label>
+            <textarea class="input_text" name="description" id="description" placeholder="Описание до 500 символов"></textarea>
+        </p>
+        <p>
+            <input type="submit" value="Опубликовать">
+        </p>
+    </form>
+</div>
+
+<script>
+    let inputText = document.querySelectorAll('.input_text');
+    let inputSelect = document.querySelectorAll('.input_select');
+    for (const element of inputSelect) {
+        element.addEventListener('change', checkSelect);
+    }
+    for (const element of inputText) {
+        element.addEventListener('blur', checkText);
+    }
+    for (const element of inputText) {
+        element.addEventListener('focus', dellWarning);
+    }
+
+    function checkText(e) {
+        let text = e.target.value.trim();
+        let span = document.createElement('span');
+        if (!text) { //проверка на пустую строку
+            span.innerText = 'Поле не может быть пустым';
+            e.target.parentElement.appendChild(span);
+        } else if (e.target.id === 'developers') { //проврка поля "Разрботчики"
+            let replace = text.replace(/[a-zа-я- ]/gi, "");
+            if (replace.length > 0) { // проверка на запрещенные симвлы(все символы кроме букв, пробела и дефиса)
+                span.innerText = 'Поле может содержть только буквы, пробелы и дефис ("-")';
+                e.target.parentElement.appendChild(span);
+            }
+        } else if (e.target.id === 'domain') {//проврка поля "Имя сайта"
+            let replace = text.replace(/[0-9a-z-\.]/g, "");
+            if (text.length < 2 || text.length > 63) {// проверка на количиство символов в сроке(разрешено от 2 до 63)
+                span.innerText = 'Домен может содержть от 2 до 63 символов';
+                e.target.parentElement.appendChild(span);
+            } else if (replace.length > 0) {// проверка на запрещенные симвлы(все символы кроме букв латинского алфавита, цифр, точки и дефиса)
+                span.innerText = 'Домен может содержть только строчные латинские буквы, цифры и дефис';
+                e.target.parentElement.appendChild(span);
+            } else if (text[0].replace(/[a-z]/, "").length > 0) {// проверка начинается ли строка с буквы
+                span.innerText = 'Домен должен начинаться с прописной латинской буквы';
+                e.target.parentElement.appendChild(span);
+            } else if (text.search(/\.([a-z]{2,4})$/) < 0) {// проверка заканчивается ли строка точкой и от 2 до 4 букв
+                span.innerText = 'Домен должен заканчиваться точкой и от 2 до 4 латинских букв';
+                e.target.parentElement.appendChild(span);
+            }
+        } else if (e.target.id === 'url') { //проврка поля "URL сайта"
+            let domen = text.replace("https://", "");
+            let replace = domen.replace(/[0-9a-z-\.]/g, "");
+            if (!text.startsWith('https://')) { // проверка начинается ли строка с "https://"
+                span.innerText = 'URL должен начинаться с "https://"';
+                e.target.parentElement.appendChild(span);
+            } else if (replace.length > 0) { // проверка на запрещенные симвлы (все символы кроме строчных букв латинского алфавита, цифр, точки и дефиса)
+                span.innerText = 'URL может содержть только строчные латинские буквы, цифры и дефис';
+                e.target.parentElement.appendChild(span);
+            } else if (domen[0].replace(/[a-z]/, "").length > 0) {// проверка начинается ли доменное имя с буквы
+                span.innerText = 'URL первый символ после "https://" модет быть только буква латинского алфавита';
+                e.target.parentElement.appendChild(span);
+            } else if (text.search(/-{2,}/) > 0) {//проверка есть ли более одного дефиса подряд
+                span.innerText = 'Не допустимо использование нескольких идущих подряд  дефисов';
+                e.target.parentElement.appendChild(span);
+            } else if (text.search(/\.([a-z]{2,4})$/) < 0) {// проверка заканчивается ли строка точкой и от 2 до 4 букв
+                span.innerText = 'URL должен заканчиваться точкой и от 2 до 4 латинских букв';
+                e.target.parentElement.appendChild(span);
+            }
+        } else if (e.target.id === 'email') {//проврка поля "E-mail для связи:"
+            let num = 0
+            for (let i = 0; i < text.length; i++) {
+                if (text[i] === '@') num++
+            }
+            if (num < 1 || num > 1) { //проверка наличия символа "@"
+                span.innerText = 'Email должен содержать только один символ "@"';
+                e.target.parentElement.appendChild(span);
+            } else {
+                let arr = text.split('@');
+                let mailbox = arr[0];
+                let hostname = arr[1];
+                let replaceMailbox = mailbox.replace(/[0-9a-z-_\.]/gi, "");
+                let replaceHostname = hostname.replace(/[0-9a-z-\.]/g, "");
+                if (mailbox.length > 31 || mailbox.length < 5) {//в mailbox должно быть от 5 до 31 символа
+                    span.innerText = 'Email должен содержать от 5 до 31 символа до символа "@"';
+                    e.target.parentElement.appendChild(span);
+                } else if (replaceMailbox.length > 0) {
+                    span.innerText = 'До символа "@" можно вводить латинские буквы, цифры, точку, нижнее подчеркивание и дефис';
+                    e.target.parentElement.appendChild(span);
+                } else if (replaceHostname.length > 0) {
+                    span.innerText = 'После символа "@" можно вводить строчные латинские буквы, точку, и дефис';
+                    e.target.parentElement.appendChild(span);
+                } else if (hostname.length > 12 || hostname.length < 5) { //в hostname должно быть от 5 до 12 символов
+                    span.innerText = 'Email должен содержать от 5 до 12 символов после символа "@"';
+                    e.target.parentElement.appendChild(span);
+                } else if (text.search(/-{2,}/) > 0) {//проверка есть ли более одного дефиса подряд
+                    span.innerText = 'После "@" не допустимо использование нескольких идущих подряд  дефисов';
+                    e.target.parentElement.appendChild(span);
+                } else if (text.search(/\.{2,}/) > 0) {//проверка есть ли более одного дефиса подряд
+                    span.innerText = 'После "@" не допустимо использование нескольких идущих подряд  точек';
+                    e.target.parentElement.appendChild(span);
+                } else if (text.search(/\.([a-z]{2,4})$/) < 0) {// проверка заканчивается ли строка точкой и от 2 до 4 букв
+                    span.innerText = 'Email должен заканчиваться точкой и от 2 до 4 латинских букв';
+                    e.target.parentElement.appendChild(span);
+                }
+            }
+        } else if (e.target.id === 'visitors') { //проврка поля "Посетителей в сутки"
+            if (text.length > 9) { // проверка количества цифр
+                span.innerText = 'Проверьте количество цифр';
+                e.target.parentElement.appendChild(span);
+            }
+        }else if (e.target.id === 'description') { //проврка поля "Описание сайта"
+            if (text.length > 500) { // проверка количества символов
+                span.innerText = 'Превышен лимит в 500 симвлов';
+                e.target.parentElement.appendChild(span);
+            }
+        }
+
+    }
+
+    function dellWarning(e) {
+        if (e.target.nextSibling) e.target.nextSibling.remove()
+    }
+
+    function checkSelect(e) {
+        let span = document.createElement('span');
+        if (e.target.id === 'votes') {
+            if(!e.target.checked){
+                span.innerText = 'Необходимо разрешить отзывы';
+                e.target.parentElement.appendChild(span);
+            }
+        }else if (e.target.id === 'division') {
+            console.dir(e.target)
+            // if(!e.target.checked){
+            //     span.innerText = 'Необходимо разрешить отзывы';
+            //     e.target.parentElement.appendChild(span);
+            // }
+        }
+    }
+</script>
+
+</body>
+
+</html>
