@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset=UTF-8>
+    <title>drag&amp;drop</title>
+  </head>
+  <body style=''>
+
+
+<img src='http://fe.it-academy.by/Sites/0000007/sax.jpg'>
+<img src='http://fe.it-academy.by/Sites/0000007/Yin_and_Yang.png' width=100>
+<img src='http://fe.it-academy.by/Sites/0000007/Man-and-woman.png' width=150>
+<img src='http://fe.it-academy.by/Sites/0000007/No_smoking.png' style='padding-left: 50px'>
+<div ></div>
+<script>
+  let img = document.querySelectorAll('img')
+  for (let imgElement of img) {
+    imgElement.addEventListener('mousedown', mousedown);
+    imgElement.ondragstart = function() {
+      return false;
+    }
+  }
+  function mousedown (event) {
+    let obj =event.target;
+    let zIndex = obj.style.zIndex;
+    let shiftX = event.clientX - obj.getBoundingClientRect().left;
+    let shiftY = event.clientY - obj.getBoundingClientRect().top;
+    document.addEventListener('mousemove', mouseMove);
+    obj.addEventListener('mouseup', mouseup);
+    obj.style.position = 'absolute';
+    obj.style.cursor = 'grabbing';
+    obj.style.zIndex = "1000";
+    moveToClick(event.pageX, event.pageY);
+    function moveToClick(pageX, pageY) {
+      obj.style.left = pageX - shiftX + 'px';
+      obj.style.top = pageY - shiftY + 'px';
+    }
+    function mouseMove(event) {
+      moveToClick(event.pageX, event.pageY);
+    }
+    function mouseup(e) {
+      document.removeEventListener('mousemove', mouseMove);
+      obj.style.zIndex = zIndex;
+      obj.style.cursor = 'auto';
+    }
+  }
+
+
+</script>
+
+  </body>
+</html>
