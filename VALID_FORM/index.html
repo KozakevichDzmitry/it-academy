@@ -239,10 +239,10 @@
 
 
     function checkSelect(elem) {
-        dellSpan(elem)
         let span = document.createElement('span');
         if (elem.id === 'votes') {
             if (!elem.checked) {
+                dellSpan(elem)
                 span.innerText = 'Необходимо разрешить отзывы';
                 elem.parentElement.appendChild(span);
                 return elem
@@ -252,15 +252,18 @@
         } else if (elem.name === 'payment') {
             if (elem.checked) {
                 if (elem.id === 'paymentFree') { //бесплатное размещение запрещено
+                    dellSpan(elem)
                     span.innerText = 'Бесплатное размещение недоступно';
+                    console.log(elem.parentElement)
                     elem.parentElement.appendChild(span);
                     return elem
+                }else {
+                    dellSpan(elem)
                 }
-            } else if (!elem.checked) {
-                dellSpan(elem)
             }
         } else if (elem.id === 'catalog') {
             if (elem.value === 'health') {//размещение в рубрике "Здоровье" недоступно
+                dellSpan(elem)
                 span.innerText = 'На данный момент рубрика катаога "Здоровье" недоступна';
                 elem.parentElement.appendChild(span);
                 return elem
@@ -321,7 +324,6 @@
         }
         if (arr.length > 0) {
             arr = arr.sort(function(a, b) {return formArr.indexOf(a) - formArr.indexOf(b);});
-            console.dir(arr);
             arr[0].scrollIntoView()
             arr[0].focus();
         }
