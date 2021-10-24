@@ -17,11 +17,12 @@
 
   window.onload = function () {
     let img = document.querySelectorAll('img')
+
     for (let imgElement of img) {
-      console.dir(imgElement);
       imgElement.addEventListener('mousedown', mousedown);
       imgElement.style.top = imgElement.offsetTop +'px';
       imgElement.style.left = imgElement.offsetLeft+'px';
+      imgElement.style.zIndex = 1;
       imgElement.ondragstart = function () {
         return false;
       }
@@ -50,10 +51,17 @@
         moveToClick(event.pageX, event.pageY);
       }
 
-      function mouseup(e) {
+      function mouseup() {
+        console.log('1')
         document.removeEventListener('mousemove', mouseMove);
-        obj.style.zIndex = zIndex;
+        obj.style.zIndex = img.length;
         obj.style.cursor = 'auto';
+        for (let imgElem of img) {
+          if(imgElem != obj){
+            if(imgElem.style.zIndex >1)
+                    imgElem.style.zIndex=imgElem.style.zIndex-1;
+          }
+        }
       }
     }
   }
