@@ -2,297 +2,518 @@
 <html class="no-js" lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <title></title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title></title>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
 </head>
 
 <body>
 <style>
-  * {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-  }
+    * {
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+    }
 
-  table {
-    border-collapse: collapse;
-    background: white;
-    border-spacing: 0;
-  }
+    .create p {
+        font-size: 13px;
+        font-weight: 400;
+    }
 
-  td {
-    width: 40px;
-    height: 40px;
-    border: black 1px solid;
-    text-align: center;
+    input {
+        margin: 3px 2px;
+        width: 50px;
+        font-size: 11px;
+        font-weight: bold;
+        padding: 6px 0 4px 10px;
+        border: 1px solid #cecece;
+        background: #F6F6f6;
+        border-radius: 8px;
+    }
 
-  }
+    input::placeholder {
+        font-size: 10px;
+    }
 
-  .black_td {
-    /*background: #555;*/
-  }
+    #mat {
+        position: relative;
+    }
 
-  .blur {
-    backdrop-filter: grayscale(0) contrast(10) blur(14px);
-  }
+    #vertical_line {
+        list-style-type: none;
+        margin-top: 11px;
+    }
 
-  .queen {
-    width: 100%;
-    height: 100%;
-    background: url(queen.png) center no-repeat;
-    background-size: cover;
-  }
+    #contour_line {
+        margin-top: 5px;
+        margin-left: 34px;
+    }
+
+    #vertical_line li {
+        width: 34px;
+        height: 40px;
+        text-align: center;
+    }
+
+    #contour_line li {
+        display: inline-block;
+        width: 40px;
+        height: 28px;
+        text-align: center;
+    }
+
+    #board {
+        position: absolute;
+        top: 28px;
+        left: 34px;
+    }
+
+    table {
+        border-collapse: collapse;
+        background: white;
+        border-spacing: 0;
+    }
+
+    td {
+        width: 40px;
+        height: 40px;
+        border: #333 1px solid;
+        text-align: center;
+
+    }
+
+    .black_td {
+        background: #333;
+    }
+
+    .blur {
+        box-sizing: border-box;
+        filter: invert(32%);
+        backdrop-filter: brightness(90%);
+        border: goldenrod 1px solid;
+    }
+
+    .queen {
+        width: 100%;
+        height: 100%;
+        background: url(queen.png) center no-repeat;
+        background-size: cover;
+    }
+
+    .blur.queen_td {
+        backdrop-filter: brightness(100%);
+        filter: invert(0);
+        background-color: transparent;
+    }
+
+    #info {
+        display: none;
+        max-height: 250px;
+        overflow: scroll;
+    }
+
+    #info.active {
+        display: inline-block;
+    }
+
+    .combination {
+        cursor: pointer;
+        display: block;
+        margin: 2px 10px;
+        font-size: 12px;
+        letter-spacing: 2px;
+        font-style: italic;
+        border: transparent 1px solid;
+    }
+
+    .active {
+        border: yellowgreen 1px solid;
+    }
+
+    .btn {
+        display: inline-block;
+        box-sizing: border-box;
+        padding: 0px 15px;
+        margin: 8px 8px;
+        outline: none;
+        border: 1px solid #fff;
+        border-radius: 50px;
+        height: 30px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        color: #444;
+        background-color: #fff;
+        box-shadow: 0 4px 6px rgb(65 132 144 / 10%), 0 1px 3px rgb(0 0 0 / 8%);
+        cursor: pointer;
+        user-select: none;
+        appearance: none;
+        touch-action: manipulation;
+        vertical-align: top;
+        transition: box-shadow 0.2s;
+    }
+
+    .btn:focus-visible {
+        border: 1px solid #4c51f9;
+        outline: none;
+    }
+
+    .btn:hover {
+        transition: all 0.2s;
+        box-shadow: 0 7px 14px rgb(65 132 144 / 10%), 0 3px 6px rgb(0 0 0 / 8%);
+    }
+
+    .btn:active {
+        background-color: #808080;
+    }
+
+    .btn:disabled {
+        background-color: #eee;
+        border-color: #eee;
+        color: #444;
+        cursor: not-allowed;
+    }
+
+    #clear {
+        display: none;
+    }
+
+    #decision {
+        display: none;
+        cursor: pointer;
+    }
 </style>
-<div id="board">
 
+
+<div class="create">
+    <p>Ширина поля: <input id="size_board" type="number" placeholder="8"></p>
+    <p>Количество ферзей: <input id="num_queen" type="number" placeholder="8"></p>
+    <button id="btn" class="btn">Создать</button>
 </div>
+<div id="mat">
+    <ul id="contour_line">
+    </ul>
+    <ul id="vertical_line">
+    </ul>
+    <div id="board">
+    </div>
+    <button id='clear' class="btn">Сброс</button>
+</div>
+<h5 id="decision">Показать варианты решения (<span></span>)</h5>
+<div id="info"></div>
 
 
 <script>
 
-  "use strict";
-  
-  let Chessboard = {
-    size: 3,
-    numQueen: 2,
-    numActiveQueen: 0,
-    createBoard: function () {
-      let divBoard = document.querySelector('#board');
-      let table = document.createElement('table');
-      for (let i = 1; i <= this.size; i++) {
-        let tr = document.createElement('tr');
-        tr.setAttribute('id', i);
-        for (let j = 1; j <= this.size; j++) {
-          let td = document.createElement('td');
-          td.setAttribute('id', i + '-' + j);
-          td.setAttribute('class', 'free');
-          td.setAttribute('data-counter', '0');
-          td.addEventListener('click', this.moveQueen);
-          td.innerHTML = td.id;
-          tr.appendChild(td);
-        }
-        table.appendChild(tr);
-        divBoard.appendChild(table);
-      }
-    },
-    paintingBoard: function () {
-      let td = document.querySelectorAll('td');
-      for (let i = 0; i < td.length; i++) {
-        let numTr = Math.trunc(i / this.size);
-        let numTd = i % this.size;
-        if (numTr % 2) {
-          if (numTd % 2) td[i].classList.add('black_td');
-        } else {
-          if (!(numTd % 2)) td[i].classList.add('black_td');
-        }
-      }
-    },
-    moveQueen: function () {
-      let queenDiv = document.createElement('div');
-      queenDiv.setAttribute('class', 'queen');
-      if (this.classList.contains('queen_td')) {
-        this.classList.remove("queen_td");
-        this.innerHTML = '';
-        Chessboard.shadowBlur(this);
-        Chessboard.numActiveQueen -= 1;
-      } else if (Chessboard.numActiveQueen < Chessboard.numQueen) {
-        this.appendChild(queenDiv);
-        this.classList.add('queen_td');
-        Chessboard.showBlur(this);
-        Chessboard.numActiveQueen += 1;
-      }
-    },
-    showBlur: function (elem) {
-      let cellNum = elem.id.split('-');
-      let row = cellNum[0];
-      let column = cellNum[1];
-      let self = this;
-      elem.classList.replace('free', 'blur');
+    "use strict";
+    let inputSize = document.querySelector('#size_board');
+    let inputNumQueen = document.querySelector('#num_queen');
+    let btn = document.querySelector('#btn');
+    let divBoard = document.querySelector('#board');
+    let verticalLine = document.querySelector('#vertical_line');
+    let contourLine = document.querySelector('#contour_line');
+    let decision = document.querySelector('#decision');
+    let info = document.querySelector('#info');
+    let clear = document.querySelector('#clear');
+    let chess;
+    decision.addEventListener('click', veiwdDecision)
+    btn.addEventListener('click', createObj)
+    clear.addEventListener('click', clearChess);
 
-      function addBlur(cell) {
-        cell.classList.replace('free', 'blur');
-        cell.removeEventListener('click', self.moveQueen);
-        cell.dataset.counter = +cell.dataset.counter + 1;
-      }
+    function Chessboard(size, numQueen) {
+        let self = this;
+        self.size = size;
+        self.numQueen = numQueen;
+        let numActiveQueen = 0;
+        self.createBoard = function () {
+            let table = document.createElement('table');
 
-      for (let i = 1; i <= this.size; i++) {
-        let cellH = document.getElementById(i + '-' + column);
-        let cellW = document.getElementById(row + '-' + i);
-        if (cellW.id !== elem.id) {
-          addBlur(cellW);
-        }
-        if (cellH.id !== elem.id) {
-          addBlur(cellH);
-        }
-      }
-      for (let j = 1; j < this.size; j++) {
-        let diagonalCell = row - j + '-' + (column - j);
-        let cellD = document.getElementById(diagonalCell);
-        if (cellD && cellD.id !== elem.id) {
-          addBlur(cellD);
-        } else {
-          break
-        }
-      }
-      for (let j = 1; j < this.size; j++) {
-        let diagonalCell = +row + j + '-' + (+column + j);
-        let cellD = document.getElementById(diagonalCell);
-        if (cellD && cellD.id !== elem.id) {
-          addBlur(cellD);
-        } else {
-          break
-        }
-      }
-      for (let j = 1; j < this.size; j++) {
-        let diagonalCell = row - j + '-' + (+column + j);
-        let cellD = document.getElementById(diagonalCell);
-        if (cellD && cellD.id !== elem.id) {
-          addBlur(cellD)
-        } else {
-          break
-        }
-      }
-      for (let j = 1; j < this.size; j++) {
-        let diagonalCell = +row + j + '-' + (column - j);
-        let cellD = document.getElementById(diagonalCell);
-        if (cellD && cellD.id !== elem.id) {
-          addBlur(cellD)
-        } else {
-          break
-        }
-      }
-    },
-    shadowBlur: function (elem) {
-      let cellNum = elem.id.split('-');
-      let row = cellNum[0];
-      let column = cellNum[1];
-      let self = this;
-      elem.classList.replace('blur', 'free');
+            for (let i = 1; i <= self.size; i++) {
+                let tr = document.createElement('tr');
+                let liContour = document.createElement('li');
+                let liVertical = document.createElement('li');
+                liContour.textContent = i;
+                liVertical.textContent = i;
+                tr.setAttribute('id', i);
+                for (let j = 1; j <= self.size; j++) {
+                    let td = document.createElement('td');
+                    td.setAttribute('id', i + '-' + j);
+                    td.setAttribute('class', 'free');
+                    td.setAttribute('data-counter', '0');
+                    td.addEventListener('click', self.moveQueen);
+                    tr.appendChild(td);
+                }
+                verticalLine.appendChild(liVertical);
+                contourLine.appendChild(liContour);
+                table.appendChild(tr);
+                divBoard.appendChild(table);
+            }
+        };
+        self.paintingBoard = function () {
+            let td = document.querySelectorAll('td');
+            for (let i = 0; i < td.length; i++) {
+                let numTr = Math.trunc(i / self.size);
+                let numTd = i % self.size;
+                if (numTr % 2) {
+                    if (numTd % 2) td[i].classList.add('black_td');
+                } else {
+                    if (!(numTd % 2)) td[i].classList.add('black_td');
+                }
+            }
+        };
+        self.moveQueen = function (e) {
+            let elem = e.currentTarget || e;
+            let queenDiv = document.createElement('div');
+            queenDiv.setAttribute('class', 'queen');
+            if (elem.classList.contains('queen_td')) {
+                elem.classList.remove("queen_td");
+                elem.innerHTML = '';
+                self.shadowBlur(elem);
+                numActiveQueen -= 1;
+            } else if (numActiveQueen < self.numQueen) {
+                elem.appendChild(queenDiv);
+                elem.classList.add('queen_td');
+                self.showBlur(elem);
+                numActiveQueen += 1;
+            }
+        };
+        self.showBlur = function (elem) {
+            let cellNum = elem.id.split('-');
+            let row = cellNum[0];
+            let column = cellNum[1];
+            elem.classList.replace('free', 'blur');
 
-      function dellBlur(cell) {
-        cell.addEventListener('click', self.moveQueen);
-        cell.dataset.counter = cell.dataset.counter - 1;
-        if (cell.dataset.counter < 1) {
-          cell.classList.replace('blur', 'free');
-        }
-      }
+            function addBlur(cell) {
+                cell.classList.replace('free', 'blur');
+                cell.removeEventListener('click', self.moveQueen);
+                cell.dataset.counter = +cell.dataset.counter + 1;
+            }
 
-      for (let i = 1; i <= this.size; i++) {
-        let cellH = document.getElementById(i + '-' + column);
-        let cellW = document.getElementById(row + '-' + i);
-        if (cellH.id !== elem.id) {
-          dellBlur(cellH);
-        }
-        if (cellW.id !== elem.id) {
-          dellBlur(cellW);
-        }
-      }
-      for (let j = 1; j < this.size; j++) {
-        let diagonalCell = row - j + '-' + (column - j);
-        let cellD = document.getElementById(diagonalCell);
-        if (cellD && cellD.id !== elem.id) {
-          dellBlur(cellD);
-        } else {
-          break
-        }
-      }
-      for (let j = 1; j < this.size; j++) {
-        let diagonalCell = +row + j + '-' + (+column + j);
-        let cellD = document.getElementById(diagonalCell);
-        if (cellD && cellD.id !== elem.id) {
-          dellBlur(cellD);
-        } else {
-          break
-        }
-      }
-      for (let j = 1; j < this.size; j++) {
-        let diagonalCell = +row - j + '-' + (+column + j);
-        let cellD = document.getElementById(diagonalCell);
-        if (cellD && cellD.id !== elem.id) {
-          dellBlur(cellD);
-        } else {
-          break
-        }
-      }
-      for (let j = 1; j < this.size; j++) {
-        let diagonalCell = +row + j + '-' + (column - j);
-        let cellD = document.getElementById(diagonalCell);
-        if (cellD && cellD.id !== elem.id) {
-          dellBlur(cellD);
-        } else {
-          break
-        }
-      }
-    },
-    search: function () {
-      let tdFree = document.querySelectorAll('.free');
-      let arr = [];
-      let totalMove = [];
-      let tdNode = tdFree;
-      let a = tdNode[0];
-     while(a){
-        let a = tdNode[0];
-        let indexNext;
-        if (!tdNode.length|| totalMove.length +tdNode.length < Chessboard.numQueen) {
-        //if (!tdNode.length) {
-          if (totalMove.length === Chessboard.numQueen) {
-            arr.push(totalMove);
-          }
-          a = totalMove[totalMove.length - 1];
-          totalMove = totalMove.slice(0, -1);
-          if (!a) break;
-          Chessboard.shadowBlur(a);
-          tdNode =  Array.from(document.querySelectorAll('.free'));
-          indexNext = tdNode.indexOf(a);
-          tdNode = tdNode.slice(indexNext + 1);
-        } else {
-          Chessboard.showBlur(a);
-          totalMove.push(a);
-          tdNode = document.querySelectorAll('.free');
-        }
-      }
-      for (let element of arr) {
-        for (let i = 0; i < element.length; i++) {
-          element[i] =  element[i].id
-        }
-        element.sort(function(a, b) { return a.split('-').join('') - b.split('-').join(''); });
-      }
-      // arr.sort(function(a, b) {
-      //   return a[2].split('-').join('') - b[2].split('-').join('')
-      // });
-      // arr.sort(function(a, b) {
-      //   return a[1].split('-').join('') - b[1].split('-').join('')
-      // });
-      arr.sort(function(a, b) {
-        return a[0].split('-').join('') - b[0].split('-').join('')
-      });
-      let newArr= [];
-      for (let i = 0; i < arr.length; i++) {
-        newArr.push(arr[0])
-        for (let j = 0; j < newArr.length; j++) {
-          for (let  elem of arr[i]) {
-            let num = 0
-              if(newArr[j].includes(arr[i][elem]))
-                num++
-              if(num !==2)
-                newArr.push(arr[i])
-          }
-        }
+            for (let i = 1; i <= self.size; i++) {
+                let cellH = document.getElementById(i + '-' + column);
+                let cellW = document.getElementById(row + '-' + i);
+                if (cellW.id !== elem.id) {
+                    addBlur(cellW);
+                }
+                if (cellH.id !== elem.id) {
+                    addBlur(cellH);
+                }
+            }
+            for (let j = 1; j < self.size; j++) {
+                let diagonalCell = row - j + '-' + (column - j);
+                let cellD = document.getElementById(diagonalCell);
+                if (cellD && cellD.id !== elem.id) {
+                    addBlur(cellD);
+                } else {
+                    break
+                }
+            }
+            for (let j = 1; j < self.size; j++) {
+                let diagonalCell = +row + j + '-' + (+column + j);
+                let cellD = document.getElementById(diagonalCell);
+                if (cellD && cellD.id !== elem.id) {
+                    addBlur(cellD);
+                } else {
+                    break
+                }
+            }
+            for (let j = 1; j < self.size; j++) {
+                let diagonalCell = row - j + '-' + (+column + j);
+                let cellD = document.getElementById(diagonalCell);
+                if (cellD && cellD.id !== elem.id) {
+                    addBlur(cellD)
+                } else {
+                    break
+                }
+            }
+            for (let j = 1; j < self.size; j++) {
+                let diagonalCell = +row + j + '-' + (column - j);
+                let cellD = document.getElementById(diagonalCell);
+                if (cellD && cellD.id !== elem.id) {
+                    addBlur(cellD)
+                } else {
+                    break
+                }
+            }
+        };
+        self.shadowBlur = function (elem) {
+            let cellNum = elem.id.split('-');
+            let row = cellNum[0];
+            let column = cellNum[1];
+            let self = this;
+            elem.classList.replace('blur', 'free');
 
-      }
+            function dellBlur(cell) {
+                cell.addEventListener('click', self.moveQueen);
+                cell.dataset.counter = cell.dataset.counter - 1;
+                if (cell.dataset.counter < 1) {
+                    cell.classList.replace('blur', 'free');
+                }
+            }
 
+            for (let i = 1; i <= self.size; i++) {
+                let cellH = document.getElementById(i + '-' + column);
+                let cellW = document.getElementById(row + '-' + i);
+                if (cellH.id !== elem.id) {
+                    dellBlur(cellH);
+                }
+                if (cellW.id !== elem.id) {
+                    dellBlur(cellW);
+                }
+            }
+            for (let j = 1; j < self.size; j++) {
+                let diagonalCell = row - j + '-' + (column - j);
+                let cellD = document.getElementById(diagonalCell);
+                if (cellD && cellD.id !== elem.id) {
+                    dellBlur(cellD);
+                } else {
+                    break
+                }
+            }
+            for (let j = 1; j < self.size; j++) {
+                let diagonalCell = +row + j + '-' + (+column + j);
+                let cellD = document.getElementById(diagonalCell);
+                if (cellD && cellD.id !== elem.id) {
+                    dellBlur(cellD);
+                } else {
+                    break
+                }
+            }
+            for (let j = 1; j < self.size; j++) {
+                let diagonalCell = +row - j + '-' + (+column + j);
+                let cellD = document.getElementById(diagonalCell);
+                if (cellD && cellD.id !== elem.id) {
+                    dellBlur(cellD);
+                } else {
+                    break
+                }
+            }
+            for (let j = 1; j < self.size; j++) {
+                let diagonalCell = +row + j + '-' + (column - j);
+                let cellD = document.getElementById(diagonalCell);
+                if (cellD && cellD.id !== elem.id) {
+                    dellBlur(cellD);
+                } else {
+                    break
+                }
+            }
+        };
+        self.search = function () {
+            let tdFree = document.querySelectorAll('.free');
+            let result = [];
+            let totalMove = [];
+            let tdNode = tdFree;
+            let a = tdNode[0];
+            while (a) {
+                let a = tdNode[0];
+                let indexNext;
+                if (self.numQueen === self.size && totalMove.length === 0 && a == document.querySelectorAll('tr')[1].firstElementChild) {
+                    break
+                }
+                if (!tdNode.length || totalMove.length + tdNode.length < self.numQueen) {
+                    if (totalMove.length == self.numQueen) {
+                        result.push(totalMove);
+                    }
+                    a = totalMove[totalMove.length - 1];
+                    totalMove = totalMove.slice(0, -1);
+                    if (!a) break;
+                    self.shadowBlur(a);
+                    tdNode = Array.from(document.querySelectorAll('.free'));
+                    indexNext = tdNode.indexOf(a);
+                    tdNode = tdNode.slice(indexNext + 1);
+                } else {
+                    self.showBlur(a);
+                    totalMove.push(a);
+                    tdNode = document.querySelectorAll('.free');
+                }
+            }
+            for (let element of result) {
+                for (let i = 0; i < element.length; i++) {
+                    element[i] = element[i].id
+                }
+            }
+            let resultUnique = [];
+            for (let i = 0; i < result.length; i++) {
+                let check = true;
+                if (!resultUnique.length) {
+                    resultUnique.push(result[i])
+                    continue
+                }
+                for (let j = 0; j < resultUnique.length; j++) {
+                    let num = 0;
+                    for (let arrElement of result[i]) {
+                        if (resultUnique[j].includes(arrElement)) num++
+                    }
+                    if (num === result[i].length) {
+                        check = false;
+                        break
+                    }
+                }
+                if (check) resultUnique.push(result[i])
+                check = false;
+            }
+            return resultUnique
+        };
+    };
 
-
-      console.log(arr)
+    function createObj() {
+        let size = inputSize.value;
+        let NumQueen = inputNumQueen.value;
+        chess = new Chessboard(size, NumQueen);
+        let div = document.createElement('div');
+        divBoard.innerHTML = '';
+        verticalLine.innerHTML = '';
+        contourLine.innerHTML = '';
+        info.innerHTML = '';
+        chess.createBoard();
+        chess.paintingBoard();
+        let resultArr = chess.search();
+        decision.firstElementChild.textContent = resultArr.length;
+        for (const element of resultArr) {
+            let p = document.createElement('p');
+            p.addEventListener('click', veiwCombs)
+            p.setAttribute('class', 'combination')
+            p.textContent = element;
+            div.appendChild(p)
+        }
+        info.appendChild(div)
+        decision.style.display = 'block';
+        clear.style.display = 'block';
     }
-  };
-  Chessboard.createBoard();
-  Chessboard.paintingBoard();
-  Chessboard.search();
 
+    function veiwCombs(e) {
+        let value = e.target.innerText.split(',')
+        let queen = document.querySelectorAll('.queen_td');
+        let combination = document.querySelectorAll('.combination');
+        for (let elem of combination) {
+            elem.classList.remove('active')
+        }
+        e.target.classList.add('active')
+        for (let elem of queen) {
+            chess.moveQueen(elem)
+        }
+        for (let e of value) {
+            let elem = document.getElementById(e)
+            chess.moveQueen(elem)
+        }
+    }
 
+    function clearChess() {
+
+        let queen = document.querySelectorAll('.queen_td');
+        let combination = document.querySelectorAll('.combination');
+        for (let elem of combination) {
+            elem.classList.remove('active')
+        }
+        for (let elem of queen) {
+            chess.moveQueen(elem)
+        }
+    }
+
+    function veiwdDecision() {
+        info.classList.toggle('active')
+    }
 </script>
 
 
