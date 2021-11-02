@@ -136,6 +136,7 @@
         clockBoard.setAttribute('class', 'board');
         clockBoard.style.width = clockSize + 'px';
         clockBoard.style.height = clockSize + 'px';
+
         arrowHour.setAttribute('class', 'arrow');
         arrowHour.setAttribute('id', 'arrow_hour');
         arrowMinute.setAttribute('class', 'arrow');
@@ -144,6 +145,7 @@
         arrowSecond.setAttribute('id', 'arrow_second');
         clockMid.setAttribute('id', 'mid');
         digitalWatch.setAttribute('id', 'digital_watch');
+        digitalWatch.style.fontSize  = clockFontSize + 'px';
         clockBoard.appendChild(arrowHour);
         clockBoard.appendChild(arrowMinute);
         clockBoard.appendChild(arrowSecond);
