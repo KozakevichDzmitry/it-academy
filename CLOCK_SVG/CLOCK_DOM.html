@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Clock_DOM</title>
+</head>
+<body>
+<style>
+    .clock {
+        margin: 10px;
+    }
+
+    .board {
+        position: relative;
+    }
+
+    .circle {
+        width: 100%;
+        height: 100%;
+    }
+    .clock_face {
+        position: absolute;
+        width: 13%;
+        height: 13%;
+        margin-bottom: 36%;
+        top: 2%;
+        left: 50%;
+        transform-origin: 50% 368%;
+        transform: translateX(-50%);
+        z-index: 1;
+    }
+
+    .clock_face_span {
+        position: absolute;
+        width: 13%;
+        height: 13%;
+        margin-bottom: 36%;
+        top: 2%;
+        left: 50%;
+        z-index: 2;
+    }
+
+    #mid {
+        position: absolute;
+        top: 50.1%;
+        left: 50.1%;
+        transform: translate(-50%, -50%);
+        width: 3.5%;
+        height: 3.5%;
+        z-index: 10;
+    }
+    #arrow_hour {
+        position: absolute;
+        height: 45%;
+        width: 40%;
+        top: 10.4%;
+        left: 52.6%;
+        transform-origin: 43.7% 88.2%;
+        transform: translateX(-50%) rotate(0deg);
+        z-index: 5;
+    }
+
+    #arrow_minute {
+        position: absolute;
+        height: 43%;
+        width: 50%;
+        top: 10%;
+        left: 47.7%;
+        transform-origin: 55% 93%;
+        transform: translateX(-50%) rotate(45deg);
+        z-index: 4;
+    }
+
+    #arrow_second {
+
+        position: absolute;
+        height: 56%;
+        width: 66%;
+        top: 12.7%;
+        left: 40.4%;
+        transform-origin: 64.6% 66.8%;
+        transform: translateX(-50%) rotate(353deg);
+        z-index: 3;
+    }
+
+    #digital_watch {
+        position: absolute;
+        top: 25%;
+        left: 50%;
+        transform: translateX(-50%);
+        height: 48%;
+        font-size: 1em;
+        z-index: 11;
+    }
+
+</style>
+<div class="box_clock">
+
+    <div class="box_create">
+        <input id="clock-diameter" type="number" placeholder="Диаметр часов">
+        <button id="btn">Построить часы</button>
+    </div>
+    <div class="clock"></div>
+
+
+
+
+
+    <script>
+
+        let btn = document.querySelector('#btn');
+        btn.addEventListener('click', createClock);
+
+        function createClock() {
+            let clock = document.querySelector('.clock');
+            let boxCreate = document.querySelector('.box_create');
+            let clockBoardBox = document.createElement('div');
+            let clockBoardSvg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+            let clockBoardSvgCircle = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
+            let arrowHour = document.createElement('object');
+            let arrowMinute = document.createElement('object');
+            let arrowSecond = document.createElement('object');
+            let clockMidSvg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+            let clockMid = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
+            let digitalWatch = document.createElement('div');
+            let clockDiameter = document.querySelector('#clock-diameter');
+            let clockSize = clockDiameter.value; // диаметр часов
+            let clockFontSize = clockDiameter.value * 6 / 100; //размер шрифта 6% от диаметра часов
+            let numeralSum = 12; // количество цифр на циферблате
+            digitalWatch.style.fontSize = clockFontSize+'px';
+            clockBoardBox.setAttribute('class', 'board');
+            clockBoardBox.style.width = clockSize + 'px';
+            clockBoardBox.style.height = clockSize + 'px';
+            clockBoardSvg.setAttribute('class', 'circle');
+            clockBoardSvgCircle.setAttribute('fill', '#FCCA66');
+            clockBoardSvgCircle.setAttribute('cx', '50%');
+            clockBoardSvgCircle.setAttribute('cy', '50%');
+            clockBoardSvgCircle.setAttribute('r', '50%');
+            arrowHour.setAttribute('id', 'arrow_hour');
+            arrowHour.setAttribute('type', 'image/svg+xml');
+            arrowHour.setAttribute('data', 'hour-arrow.svg');
+            arrowMinute.setAttribute('id', 'arrow_minute');
+            arrowMinute.setAttribute('type', 'image/svg+xml');
+            arrowMinute.setAttribute('data', 'minute-arrow.svg');
+            arrowSecond.setAttribute('id', 'arrow_second');
+            arrowSecond.setAttribute('type', 'image/svg+xml');
+            arrowSecond.setAttribute('data', 'second-arrow.svg');
+            clockMidSvg.setAttribute('id', 'mid');
+            clockMid.setAttribute('fill', '#AC2729');
+            clockMid.setAttribute('cx', '50%');
+            clockMid.setAttribute('cy', '50%');
+            clockMid.setAttribute('r', '50%');
+            digitalWatch.setAttribute('id', 'digital_watch');
+            clockBoardSvg.appendChild(clockBoardSvgCircle);
+            clockBoardBox.appendChild(clockBoardSvg);
+            clockBoardBox.appendChild(arrowHour);
+            clockBoardBox.appendChild(arrowMinute);
+            clockBoardBox.appendChild(arrowSecond);
+            clockMidSvg.appendChild(clockMid);
+            clockBoardBox.appendChild(clockMidSvg);
+            clockBoardBox.appendChild(digitalWatch);
+            for (let i = 1; i <= numeralSum; i++) { //создает циферблат от 1 до 12
+                let clockBoardSvg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+                let clockBoardSvgCircle = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
+                let clockBoardSvgNumber = document.createElementNS("http://www.w3.org/2000/svg", 'text');
+                let stepInDegree = 360 / numeralSum; // угол между цифрами
+                clockBoardSvgCircle.setAttribute('fill', '#48B382');
+                clockBoardSvgCircle.setAttribute('cx', '50%');
+                clockBoardSvgCircle.setAttribute('cy', '50%');
+                clockBoardSvgCircle.setAttribute('r', '50%');
+                clockBoardSvg.setAttribute('class', 'clock_face');
+                clockBoardSvg.style.transform = `translateX(-50%) rotate(${stepInDegree * i}deg)`;
+                clockBoardSvgNumber.setAttribute('fill', '#333');
+                clockBoardSvgNumber.setAttribute('x', '50%');
+                clockBoardSvgNumber.setAttribute('y', '50%');
+                clockBoardSvgNumber.setAttribute('text-anchor', 'middle');
+                clockBoardSvgNumber.setAttribute('dominant-baseline', 'central');
+                clockBoardSvgNumber.setAttribute('font-size',`${clockFontSize}px`)
+                clockBoardSvgNumber.textContent = i;
+                clockBoardSvg.appendChild(clockBoardSvgCircle);
+                clockBoardSvg.appendChild(clockBoardSvgNumber);
+                clockBoardBox.appendChild(clockBoardSvg);
+            }
+            clock.appendChild(clockBoardBox);
+            boxCreate.hidden = true;
+            time();
+        }
+
+        function time() {
+            let digitalWatch = document.querySelector('#digital_watch');
+            let arrowHour = document.querySelector('#arrow_hour');
+            let arrowMinutes = document.querySelector('#arrow_minute');
+            let arrowSecond = document.querySelector('#arrow_second');
+            let date = new Date();
+            let hour = date.getHours();
+            let minutes = date.getMinutes();
+            let seconds = date.getSeconds();
+            let numeralSum = 12; // количество цифр на циферблате
+            let rotateHour = 360 / numeralSum * hour + 360 / numeralSum * (minutes / 60); // угол часовой стрелки с учетом минут
+            let rotateMinutes = 360 / 60 * minutes; // угол минутной стрелки
+            let rotateSeconds = 360 / 60 * seconds; // угол секундной стрелки
+            let delayMilliseconds = 1020 - date.getMilliseconds();//задержки в миллесекундах +20 миллисекунд погрешность setTimeout
+            function str0l(val, len) {
+                let strVal = val.toString();
+                while (strVal.length < len)
+                    strVal = '0' + strVal;
+                return strVal;
+            }
+
+            digitalWatch.textContent = `${str0l(hour, 2)}:${str0l(minutes, 2)}:${str0l(seconds, 2)}`;
+            arrowHour.style.transform = `translateX(-50%) rotate(${rotateHour}deg)`;
+            arrowMinutes.style.transform = `translateX(-50%) rotate(${rotateMinutes}deg)`;
+            arrowSecond.style.transform = `translateX(-50%) rotate(${rotateSeconds}deg)`;
+            console.log(`${str0l(hour, 2)}:${str0l(minutes, 2)}:${str0l(seconds, 2)}`);
+            setTimeout(time, delayMilliseconds); //выполняет функцию с учетом задержки в миллесекундах
+        }
+
+
+    </script>
+</body>
+</html>
