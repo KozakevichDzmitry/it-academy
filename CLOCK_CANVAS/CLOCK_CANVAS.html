@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CLOCK_CANVAS</title>
+</head>
+<body>
+<style>
+    .clock {
+        margin: 10px;
+    }
+
+
+</style>
+<div class="box_clock">
+
+    <div class="box_create">
+        <input id="clock-diameter" type="number" placeholder="Диаметр часов">
+        <button id="btn">Построить часы</button>
+    </div>
+    <div class="clock">
+        <canvas>
+        </canvas>
+    </div>
+
+
+    <script>
+
+        let btn = document.querySelector('#btn');
+        btn.addEventListener('click', createClock);
+
+        function createClock() {
+            let boxCreate = document.querySelector('.box_create');
+            let ctx = document.querySelector('canvas').getContext('2d');
+            let clockDiameter = document.querySelector('#clock-diameter');
+            let clockSize = clockDiameter.value; // диаметр часов
+            let midSize = clockSize * 0.035;// диаметр центра часов
+            let clockFontSize = clockDiameter.value * 6 / 100; //размер шрифта 6% от диаметра часов
+            let date = new Date();
+            let hour = date.getHours();
+            let minutes = date.getMinutes();
+            let seconds = date.getSeconds();
+            let numeralSum = 12; // количество цифр на циферблате
+            let rotateHour = 360 / numeralSum * hour + 360 / numeralSum * (minutes / 60) - 90; // угол часовой стрелки с учетом минут
+            let rotateMinutes = 360 / 60 * minutes - 90; // угол минутной стрелки
+            let rotateSeconds = 360 / 60 * seconds - 90; // угол секундной стрелки
+            let delayMilliseconds = 1020 - date.getMilliseconds();//задержки в миллесекундах +20 миллисекунд погрешность setTimeout
+            let getRadians = function (degrees) {
+                return (Math.PI / 180) * degrees;
+            }
+
+            function str0l(val, len) {
+                let strVal = val.toString();
+                while (strVal.length < len)
+                    strVal = '0' + strVal;
+                return strVal;
+            }
+
+            document.querySelector('canvas').setAttribute('width', clockSize);
+            document.querySelector('canvas').setAttribute('height', clockSize);
+            ctx.clearRect(0, 0, clockSize, clockSize);
+            ctx.fillStyle = '#FCCA66';
+            ctx.beginPath();
+            ctx.arc(clockSize / 2, clockSize / 2, clockSize / 2, 0, getRadians(360));
+            ctx.fill();
+            ctx.closePath();
+            //центр часов
+            ctx.fillStyle = 'red';
+            ctx.beginPath();
+            ctx.arc(clockSize / 2, clockSize / 2, midSize / 2, 0, getRadians(360));
+            ctx.fill();
+            ctx.closePath();
+            for (let i = 1; i <= numeralSum; i++) { //создает циферблат от 1 до 12
+                let radiusClockFace = clockSize / 2 * 0.85; //радиус циферблата
+                let sizeClockFace = clockSize * 0.05; // размер кругов циферблата
+                let step = 360 / 12 * i; //шаг в градусах
+                let angleStart = -90; //начальный угол
+                let x = clockSize / 2 + (radiusClockFace * Math.cos(getRadians(angleStart + step))); // OX
+                let y = clockSize / 2 + (radiusClockFace * Math.sin(getRadians(angleStart + step))); // OY
+                //круги циферблата
+                ctx.fillStyle = '#48B382';
+                ctx.beginPath();
+                ctx.arc(x, y, sizeClockFace, 0, getRadians(360));
+                ctx.fill();
+                ctx.closePath();
+                //цифры циферблата
+                ctx.fillStyle = "#333";
+                ctx.beginPath();
+                ctx.font = `${clockFontSize}px arial`;
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText(i.toString(), x, y);
+                ctx.closePath();
+            }
+            //элекронные часы
+            ctx.fillStyle = "#333";
+            ctx.beginPath();
+            ctx.font = `${clockFontSize * 0.8}px arial`;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(`${str0l(hour, 2)}:${str0l(minutes, 2)}:${str0l(seconds, 2)}`, clockSize * 0.5, clockSize * 0.3);
+            ctx.closePath();
+
+            //стрелки часов
+            function createArrow(width, height, rotate) {
+                let x = clockSize / 2 + (height * Math.cos(getRadians(rotate))); // OX
+                let y = clockSize / 2 + (height * Math.sin(getRadians(rotate))); // OY
+                ctx.fillStyle = '#333333';
+                ctx.beginPath();
+                ctx.lineWidth = width;
+                ctx.lineCap = "round";
+                ctx.moveTo(clockSize / 2, clockSize / 2);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                ctx.closePath();
+
+            }
+
+            createArrow(clockSize * 0.02, clockSize * 0.25, rotateHour); //часовая стрелка
+            createArrow(clockSize * 0.015, clockSize * 0.35, rotateMinutes); //минутная стрелка
+            createArrow(clockSize * 0.01, clockSize * 0.45, rotateSeconds); //секундная стрелка
+
+            boxCreate.hidden = true;
+            console.log(`${str0l(hour, 2)}:${str0l(minutes, 2)}:${str0l(seconds, 2)}`);
+
+            setTimeout(createClock, delayMilliseconds); //выполняет функцию с учетом задержки в миллесекундах
+        }
+
+
+
+    </script>
+</body>
+</html>
