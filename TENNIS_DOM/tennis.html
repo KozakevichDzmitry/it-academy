@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<style>
+    .box {
+        margin: 20px;
+    }
+
+    .info {
+        display: flex;
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+    .info button {
+        width: 10%;
+        margin-left: 10px;
+    }
+
+    #report {
+        width: 80%;
+        font-size: 20px;
+        text-align: center;
+    }
+
+    #board {
+        position: relative;
+        margin: 10px;
+        background-color: #F0EE7E;
+        border: 1px #333 solid;
+    }
+
+    .bat {
+        width: 10px;
+        height: 150px;
+    }
+
+    #bat-left {
+        position: absolute;
+        top: 80px;
+        left: 0;
+        background-color: #09AA57;
+    }
+
+    #bat-right {
+        position: absolute;
+        top: 80px;
+        right: 0;
+        background-color: #191497;
+    }
+
+    #ball {
+        position: absolute;
+        top: 50%;
+        right: 50%;
+        width: 40px;
+        height: 40px;
+        transform: translate(50%, -50%);
+        background-color: #F02137;
+        border-radius: 50%;
+    }
+</style>
+<div class="box">
+    <div class="info">
+        <button>Start</button>
+        <div id="report">0:0</div>
+    </div>
+
+    <div id="board">
+        <div class="bat" id="bat-left"></div>
+        <div class="bat" id="bat-right"></div>
+        <div id="ball"></div>
+    </div>
+</div>
+
+
+<script>
+    let divBall = document.getElementById('ball');
+    let btn = document.querySelector('button');
+    let board = document.getElementById('board');
+    let batLeft = document.getElementById('bat-left');
+    let batRight = document.getElementById('bat-right');
+    let report = document.getElementById('report');
+    let timerId;
+    let cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
+    let RAF =
+        // находим, какой метод доступен
+        window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        // ни один не доступен
+        // будем работать просто по таймеру
+        function (callback) {
+            timerId = window.setTimeout(callback, 1000 / 60);
+        }
+    ;
+    let ball = {
+        step: 2,
+        angle: 0,
+        winLeft: 0,
+        winRight: 0,
+        positionBallTop: 0,
+        positionBallLeft: 0,
+    }
+    document.addEventListener('keydown', moveBat);
+    btn.addEventListener('click', startMoveBall);
+    window.onload = () => { //установка резмера поля, запоминаем стартовое положение шарика,
+        board.style.width = '800px';
+        board.style.height = '500px';
+        ball.positionBallTop = divBall.offsetTop;
+        ball.positionBallLeft = divBall.offsetLeft;
+    }
+
+    function startMoveBall() { //запуск дижения шарика и сброс таймеров при повторном нажатии, установка случайного угла движения шарика
+        divBall.style.top = ball.positionBallTop + 'px';
+        divBall.style.left = ball.positionBallLeft + 'px';
+        ball.angle = Math.floor(Math.random() * 360);
+        if (ball.angle % 90 < 15) {
+            ball.angle += 15;
+        }
+        clearTimeout(timerId);
+        cancelAnimationFrame(timerId);
+        move();
+    }
+
+    function move() { // рассчет положения шарика и его позиционирование
+        let cos = Math.cos(ball.angle * Math.PI / 180).toFixed(2); // косинус угла\
+        divBall.style.left = divBall.offsetLeft + (ball.step * cos) + 'px';
+        let sin = Math.sin(ball.angle * Math.PI / 180).toFixed(2); // синус угла
+        divBall.style.top = divBall.offsetTop + (ball.step * sin) + 'px';
+        check();
+    }
+
+    function check() { //проверки на касание стенок и кареток
+        if (board.clientWidth - divBall.clientWidth * 3 / 2 <= divBall.offsetLeft) {//проверка на касание справа
+            ball.winLeft += 1;
+            report.textContent = `${ball.winLeft}:${ball.winRight}`;
+            //ball.angle = 180 - ball.angle; // рикошет от стенки
+            return
+        } else if (divBall.offsetLeft + divBall.clientWidth / 2 <= 0) {//проверка на касание слева
+            ball.winRight += 1
+            report.textContent = `${ball.winLeft}:${ball.winRight}`;
+            //ball.angle = 180 - ball.angle; // рикошет от стенки
+            return
+        } else if (board.clientHeight - divBall.clientHeight / 2 <= divBall.offsetTop) {//проверка на касание снизу
+            ball.angle = 360 - ball.angle;
+        } else if (divBall.offsetTop - divBall.clientHeight / 2 <= 0) {//проверка на касание сверху
+            ball.angle = 360 - ball.angle;
+        } else if (divBall.offsetLeft + divBall.clientWidth / 2 <= batLeft.offsetLeft + batLeft.clientWidth || divBall.offsetLeft + divBall.clientWidth * 3 / 2 >= batRight.offsetLeft) {
+            if (divBall.offsetTop + divBall.clientWidth * 0.2 >= batLeft.offsetTop && divBall.offsetTop - divBall.clientWidth * 0.2 <= batLeft.offsetTop + batLeft.clientHeight) {
+                ball.angle = 180 - ball.angle;
+            } else if (divBall.offsetTop + divBall.clientWidth * 0.2 >= batRight.offsetTop && divBall.offsetTop - divBall.clientWidth * 0.2 <= batRight.offsetTop + batRight.clientHeight) {
+                ball.angle = 180 - ball.angle;
+            }
+        }
+        timerId = RAF(move);
+    }
+
+    function moveBat(e) { // управление каретками
+        let step = 5; // скорость движения кретки движения каретки
+        let minBottomBoard = board.clientHeight - batLeft.clientHeight - step;// максимальная высота опускания каретки
+        if (e.code === "ControlLeft" && batLeft.offsetTop <= minBottomBoard) { //левая каретка вниз
+            batLeft.style.top = batLeft.offsetTop + step + 'px';
+        } else if (e.code === "ShiftLeft" && batLeft.offsetTop - step >= 0) { //левая каретка вверх
+            batLeft.style.top = batLeft.offsetTop - step + 'px';
+        } else if (e.code === "ArrowDown" && batRight.offsetTop <= minBottomBoard) { //правая каретка вверх
+            batRight.style.top = batRight.offsetTop + step + 'px';
+        } else if (e.code === "ArrowUp" && batRight.offsetTop - step >= 0) {//правая каретка вверх
+            batRight.style.top = batRight.offsetTop - step + 'px';
+        }
+    }
+
+
+</script>
+</body>
+</html>
