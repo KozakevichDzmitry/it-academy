@@ -102,41 +102,55 @@
         }
     ;
     let ball = {
-        step: 2,
-        angle: 0,
-        winLeft: 0,
-        winRight: 0,
-        positionBallTop: 0,
-        positionBallLeft: 0,
+        step: 2, //стартовый шаг изменения пложения шарика
+        angle: 0, //угол полета шарика
+        winLeft: 0, //счет на табло
+        winRight: 0, //счет на табло
+        positionBallTop: 0, //стартавая позиция шарика (будет записана)
+        positionBallLeft: 0, //стартавая позиция шарика (будет записана)
+        speedBatLeft: 0, //скорость левой каретки
+        speedBatRight: 0, //скорость правой каретки
     }
     document.addEventListener('keydown', moveBat);
+    document.addEventListener('keyup', stopBat);
     btn.addEventListener('click', startMoveBall);
     window.onload = () => { //установка резмера поля, запоминаем стартовое положение шарика,
         board.style.width = '800px';
         board.style.height = '500px';
-        ball.positionBallTop = divBall.offsetTop;
-        ball.positionBallLeft = divBall.offsetLeft;
+        ball.positionBallTop = divBall.offsetTop; // установка шарика  стартовое положение шарика по ОУ в центре
+        ball.positionBallLeft = divBall.offsetLeft; // установка шарика  стартовое положение шарика по ОХ в центре
     }
 
     function startMoveBall() { //запуск дижения шарика и сброс таймеров при повторном нажатии, установка случайного угла движения шарика
         divBall.style.top = ball.positionBallTop + 'px';
         divBall.style.left = ball.positionBallLeft + 'px';
-        ball.angle = Math.floor(Math.random() * 360);
-        if (ball.angle % 90 < 15) { // исправление угла
+        ball.angle = Math.floor(Math.random() * 360); //случайный угол полета шарика
+        if (ball.angle % 90 < 15) { // исправление угла, чтобы шарик не летель перпендикулярно плоскости стенок
             ball.angle += 15;
         }else if(ball.angle % 90 > 90-15) {
             ball.angle -= 15;
         }
-        clearTimeout(timerId);
-        cancelAnimationFrame(timerId);
+        clearTimeout(timerId);//сброс всех таймера
+        cancelAnimationFrame(timerId); //альтернативный сброс всех таймера
         move();
     }
 
-    function move() { // рассчет положения шарика и его позиционирование
-        let cos = Math.cos(ball.angle * Math.PI / 180).toFixed(2); // косинус угла\
-        divBall.style.left = divBall.offsetLeft + (ball.step * cos) + 'px';
-        let sin = Math.sin(ball.angle * Math.PI / 180).toFixed(2); // синус угла
-        divBall.style.top = divBall.offsetTop + (ball.step * sin) + 'px';
+    function move() { // рассчет положения шарика и его позиционирование, движение кареток
+        let cos = Math.cos(ball.angle * Math.PI / 180).toFixed(2);             // косинус угла
+        let sin = Math.sin(ball.angle * Math.PI / 180).toFixed(2);             // синус угла
+        let minBottomBoard = board.clientHeight - batLeft.clientHeight - 1;   // максимальная высота опускания каретки
+        divBall.style.left = divBall.offsetLeft + (ball.step * cos) + 'px';   //изменение позиции шарика по оси Х
+        divBall.style.top = divBall.offsetTop + (ball.step * sin) + 'px';    //изменение позиции шарика по оси У
+        if(batLeft.offsetTop <= minBottomBoard && ball.speedBatLeft >0){      //левая каретка  вниз
+            batLeft.style.top = +batLeft.offsetTop + ball.speedBatLeft + 'px';
+        }else if(batLeft.offsetTop -1 >= 0 && ball.speedBatLeft < 0){         //левая каретка вверх
+            batLeft.style.top = +batLeft.offsetTop + ball.speedBatLeft + 'px';
+        }
+        if(batRight.offsetTop <= minBottomBoard && ball.speedBatRight > 0){    //правая каретка  вниз
+            batRight.style.top = +batRight.offsetTop + ball.speedBatRight + 'px';
+        }else if(batRight.offsetTop -1 >= 0 && ball.speedBatRight < 0){      //правая каретка  вниз
+            batRight.style.top = +batRight.offsetTop + ball.speedBatRight + 'px';
+        }
         check();
     }
 
@@ -144,38 +158,51 @@
         if (board.clientWidth - divBall.clientWidth * 3 / 2 <= divBall.offsetLeft) {//проверка на касание справа
             ball.winLeft += 1;
             report.textContent = `${ball.winLeft}:${ball.winRight}`;
-            //ball.angle = 180 - ball.angle; // рикошет от стенки
+            //ball.angle = 180 - ball.angle; // рикошет от правой стенки
             return
         } else if (divBall.offsetLeft + divBall.clientWidth / 2 <= 0) {//проверка на касание слева
             ball.winRight += 1
             report.textContent = `${ball.winLeft}:${ball.winRight}`;
-            //ball.angle = 180 - ball.angle; // рикошет от стенки
+            //ball.angle = 180 - ball.angle; // рикошет от левой стенки
             return
         } else if (board.clientHeight - divBall.clientHeight / 2 <= divBall.offsetTop) {//проверка на касание снизу
             ball.angle = 360 - ball.angle;
         } else if (divBall.offsetTop - divBall.clientHeight / 2 <= 0) {//проверка на касание сверху
             ball.angle = 360 - ball.angle;
-        } else if (divBall.offsetLeft + divBall.clientWidth / 2 <= batLeft.offsetLeft + batLeft.clientWidth || divBall.offsetLeft + divBall.clientWidth * 3 / 2 >= batRight.offsetLeft) {
+        } else if (divBall.offsetLeft + divBall.clientWidth / 2 <= batLeft.offsetLeft + batLeft.clientWidth ) { //проверка на касание левой каретки
             if (divBall.offsetTop + divBall.clientWidth * 0.2 >= batLeft.offsetTop && divBall.offsetTop - divBall.clientWidth * 0.2 <= batLeft.offsetTop + batLeft.clientHeight) {
                 ball.angle = 180 - ball.angle;
-            } else if (divBall.offsetTop + divBall.clientWidth * 0.2 >= batRight.offsetTop && divBall.offsetTop - divBall.clientWidth * 0.2 <= batRight.offsetTop + batRight.clientHeight) {
+            }
+        } else if(divBall.offsetLeft + divBall.clientWidth * 3 / 2 >= batRight.offsetLeft){//проверка на касание правой каретки
+            if (divBall.offsetTop + divBall.clientWidth * 0.2 >= batRight.offsetTop && divBall.offsetTop - divBall.clientWidth * 0.2 <= batRight.offsetTop + batRight.clientHeight) {
                 ball.angle = 180 - ball.angle;
+
             }
         }
-        timerId = RAF(move);
+        timerId = RAF(move); //запуск таймера
     }
 
     function moveBat(e) { // управление каретками
-        let step = 5; // скорость движения кретки движения каретки
-        let minBottomBoard = board.clientHeight - batLeft.clientHeight - step;// максимальная высота опускания каретки
-        if (e.code === "ControlLeft" && batLeft.offsetTop <= minBottomBoard) { //левая каретка вниз
-            batLeft.style.top = batLeft.offsetTop + step + 'px';
-        } else if (e.code === "ShiftLeft" && batLeft.offsetTop - step >= 0) { //левая каретка вверх
-            batLeft.style.top = batLeft.offsetTop - step + 'px';
-        } else if (e.code === "ArrowDown" && batRight.offsetTop <= minBottomBoard) { //правая каретка вверх
-            batRight.style.top = batRight.offsetTop + step + 'px';
-        } else if (e.code === "ArrowUp" && batRight.offsetTop - step >= 0) {//правая каретка вверх
-            batRight.style.top = batRight.offsetTop - step + 'px';
+        let step = 2; // скорость движения кретки движения каретки
+        if (e.code === "ControlLeft") { //левая каретка вниз
+            ball.speedBatLeft = step;
+        } else if (e.code === "ShiftLeft") { //левая каретка вверх
+            ball.speedBatLeft = -step
+        } else if (e.code === "ArrowDown") { //правая каретка вниз
+            ball.speedBatRight = step;
+        } else if (e.code === "ArrowUp") {//правая каретка вверх
+            ball.speedBatRight = -step;
+        }
+    }
+    function stopBat(e){
+        if (e.code === "ControlLeft") { //левая каретка stop
+            ball.speedBatLeft = 0;
+        } else if (e.code === "ShiftLeft") { //левая каретка stop
+            ball.speedBatLeft = 0;
+        } else if (e.code === "ArrowDown") { //правая каретка stop
+            ball.speedBatRight= 0;
+        } else if (e.code === "ArrowUp") {//правая каретка stop
+            ball.speedBatRight= 0;
         }
     }
 
