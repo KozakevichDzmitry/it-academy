@@ -86,7 +86,6 @@
     let batLeft = document.getElementById('bat-left');
     let batRight = document.getElementById('bat-right');
     let report = document.getElementById('report');
-    let timerId;
     let cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
     let RAF =
         // находим, какой метод доступен
@@ -98,16 +97,17 @@
         // ни один не доступен
         // будем работать просто по таймеру
         function (callback) {
-            timerId = window.setTimeout(callback, 1000 / 60);
+            window.setTimeout(callback, 1000 / 60);
         }
     ;
     let ball = {
-        step: 2, //стартовый шаг изменения пложения шарика
+        step: 0, //стартовый шаг изменения пложения шарика
         angle: 0, //угол полета шарика
         winLeft: 0, //счет на табло
         winRight: 0, //счет на табло
         positionBallTop: 0, //стартавая позиция шарика (будет записана)
         positionBallLeft: 0, //стартавая позиция шарика (будет записана)
+        statusGame: 0, // состояние игры: "0" - отановлена, "1" - идет игра
         speedBatLeft: 0, //скорость левой каретки
         speedBatRight: 0, //скорость правой каретки
     }
@@ -119,67 +119,75 @@
         board.style.height = '500px';
         ball.positionBallTop = divBall.offsetTop; // установка шарика  стартовое положение шарика по ОУ в центре
         ball.positionBallLeft = divBall.offsetLeft; // установка шарика  стартовое положение шарика по ОХ в центре
-    }
-
-    function startMoveBall() { //запуск дижения шарика и сброс таймеров при повторном нажатии, установка случайного угла движения шарика
-        divBall.style.top = ball.positionBallTop + 'px';
-        divBall.style.left = ball.positionBallLeft + 'px';
-        ball.angle = Math.floor(Math.random() * 360); //случайный угол полета шарика
-        if (ball.angle % 90 < 15) { // исправление угла, чтобы шарик не летель перпендикулярно плоскости стенок
-            ball.angle += 15;
-        }else if(ball.angle % 90 > 90-15) {
-            ball.angle -= 15;
-        }
-        clearTimeout(timerId);//сброс всех таймера
-        cancelAnimationFrame(timerId); //альтернативный сброс всех таймера
         move();
     }
 
-    function move() { // рассчет положения шарика и его позиционирование, движение кареток
-        let cos = Math.cos(ball.angle * Math.PI / 180).toFixed(2);             // косинус угла
-        let sin = Math.sin(ball.angle * Math.PI / 180).toFixed(2);             // синус угла
-        let minBottomBoard = board.clientHeight - batLeft.clientHeight - 1;   // максимальная высота опускания каретки
-        divBall.style.left = divBall.offsetLeft + (ball.step * cos) + 'px';   //изменение позиции шарика по оси Х
-        divBall.style.top = divBall.offsetTop + (ball.step * sin) + 'px';    //изменение позиции шарика по оси У
-        if(batLeft.offsetTop <= minBottomBoard && ball.speedBatLeft >0){      //левая каретка  вниз
-            batLeft.style.top = +batLeft.offsetTop + ball.speedBatLeft + 'px';
-        }else if(batLeft.offsetTop -1 >= 0 && ball.speedBatLeft < 0){         //левая каретка вверх
-            batLeft.style.top = +batLeft.offsetTop + ball.speedBatLeft + 'px';
+    function startMoveBall() { //запуск дижения шарика и сброс таймеров при повторном нажатии, установка случайного угла движения шарика
+        if (ball.statusGame == 0) {
+            ball.statusGame = 1; //начало игры
+            divBall.style.top = ball.positionBallTop + 'px';
+            divBall.style.left = ball.positionBallLeft + 'px';
+            ball.step = 2; //запук шарика с шагом 2
+            ball.angle = Math.floor(Math.random() * 360); //случайный угол полета шарика
+            if (ball.angle % 90 < 15) { // исправление угла, чтобы шарик не летель перпендикулярно плоскости стенок
+                ball.angle += 15;
+            } else if (ball.angle % 90 > 90 - 15) {
+                ball.angle -= 15;
+            }
         }
-        if(batRight.offsetTop <= minBottomBoard && ball.speedBatRight > 0){    //правая каретка  вниз
-            batRight.style.top = +batRight.offsetTop + ball.speedBatRight + 'px';
-        }else if(batRight.offsetTop -1 >= 0 && ball.speedBatRight < 0){      //правая каретка  вниз
-            batRight.style.top = +batRight.offsetTop + ball.speedBatRight + 'px';
+    }
+
+    function move() { // рассчет положения шарика и его позиционирование, движение кареток
+        if (ball.statusGame == 1) {
+            let cos = Math.cos(ball.angle * Math.PI / 180).toFixed(2);             // косинус угла
+            let sin = Math.sin(ball.angle * Math.PI / 180).toFixed(2);             // синус угла
+            let minBottomBoard = board.clientHeight - batLeft.clientHeight - 1;   // максимальная высота опускания каретки
+            divBall.style.left = divBall.offsetLeft + (ball.step * cos) + 'px';   //изменение позиции шарика по оси Х
+            divBall.style.top = divBall.offsetTop + (ball.step * sin) + 'px';    //изменение позиции шарика по оси У
+            if (batLeft.offsetTop <= minBottomBoard && ball.speedBatLeft > 0) {      //левая каретка  вниз
+                batLeft.style.top = +batLeft.offsetTop + ball.speedBatLeft + 'px';
+            } else if (batLeft.offsetTop - 1 >= 0 && ball.speedBatLeft < 0) {         //левая каретка вверх
+                batLeft.style.top = +batLeft.offsetTop + ball.speedBatLeft + 'px';
+            }
+            if (batRight.offsetTop <= minBottomBoard && ball.speedBatRight > 0) {    //правая каретка  вниз
+                batRight.style.top = +batRight.offsetTop + ball.speedBatRight + 'px';
+            } else if (batRight.offsetTop - 1 >= 0 && ball.speedBatRight < 0) {      //правая каретка  вниз
+                batRight.style.top = +batRight.offsetTop + ball.speedBatRight + 'px';
+            }
         }
         check();
     }
 
     function check() { //проверки на касание стенок и кареток
-        if (board.clientWidth - divBall.clientWidth * 3 / 2 <= divBall.offsetLeft) {//проверка на касание справа
-            ball.winLeft += 1;
-            report.textContent = `${ball.winLeft}:${ball.winRight}`;
-            //ball.angle = 180 - ball.angle; // рикошет от правой стенки
-            return
-        } else if (divBall.offsetLeft + divBall.clientWidth / 2 <= 0) {//проверка на касание слева
-            ball.winRight += 1
-            report.textContent = `${ball.winLeft}:${ball.winRight}`;
-            //ball.angle = 180 - ball.angle; // рикошет от левой стенки
-            return
-        } else if (board.clientHeight - divBall.clientHeight / 2 <= divBall.offsetTop) {//проверка на касание снизу
-            ball.angle = 360 - ball.angle;
-        } else if (divBall.offsetTop - divBall.clientHeight / 2 <= 0) {//проверка на касание сверху
-            ball.angle = 360 - ball.angle;
-        } else if (divBall.offsetLeft + divBall.clientWidth / 2 <= batLeft.offsetLeft + batLeft.clientWidth ) { //проверка на касание левой каретки
-            if (divBall.offsetTop + divBall.clientWidth * 0.2 >= batLeft.offsetTop && divBall.offsetTop - divBall.clientWidth * 0.2 <= batLeft.offsetTop + batLeft.clientHeight) {
-                ball.angle = 180 - ball.angle;
-            }
-        } else if(divBall.offsetLeft + divBall.clientWidth * 3 / 2 >= batRight.offsetLeft){//проверка на касание правой каретки
-            if (divBall.offsetTop + divBall.clientWidth * 0.2 >= batRight.offsetTop && divBall.offsetTop - divBall.clientWidth * 0.2 <= batRight.offsetTop + batRight.clientHeight) {
-                ball.angle = 180 - ball.angle;
+        if (ball.statusGame == 1) {
+            if (board.clientWidth - divBall.clientWidth * 3 / 2 <= divBall.offsetLeft) {//проверка на касание справа
+                ball.winLeft += 1;
+                report.textContent = `${ball.winLeft}:${ball.winRight}`;
+                ball.step = 0; //остановка двжения шарика
+                ball.statusGame = 0; // игра приостановлена
+                //ball.angle = 180 - ball.angle; // рикошет от правой стенки
+            } else if (divBall.offsetLeft + divBall.clientWidth / 2 <= 0) {//проверка на касание слева
+                ball.winRight += 1 // игра приостановлена
+                report.textContent = `${ball.winLeft}:${ball.winRight}`;
+                ball.step = 0; //остановка двжения шарика
+                ball.statusGame = 0;
+                //ball.angle = 180 - ball.angle; // рикошет от левой стенки
+            } else if (board.clientHeight - divBall.clientHeight / 2 <= divBall.offsetTop) {//проверка на касание снизу
+                ball.angle = 360 - ball.angle;
+            } else if (divBall.offsetTop - divBall.clientHeight / 2 <= 0) {//проверка на касание сверху
+                ball.angle = 360 - ball.angle;
+            } else if (divBall.offsetLeft + divBall.clientWidth / 2 <= batLeft.offsetLeft + batLeft.clientWidth) { //проверка на касание левой каретки
+                if (divBall.offsetTop + divBall.clientWidth * 0.2 >= batLeft.offsetTop && divBall.offsetTop - divBall.clientWidth * 0.2 <= batLeft.offsetTop + batLeft.clientHeight) {
+                    ball.angle = 180 - ball.angle;
+                }
+            } else if (divBall.offsetLeft + divBall.clientWidth * 3 / 2 >= batRight.offsetLeft) {//проверка на касание правой каретки
+                if (divBall.offsetTop + divBall.clientWidth * 0.2 >= batRight.offsetTop && divBall.offsetTop - divBall.clientWidth * 0.2 <= batRight.offsetTop + batRight.clientHeight) {
+                    ball.angle = 180 - ball.angle;
 
+                }
             }
         }
-        timerId = RAF(move); //запуск таймера
+        RAF(move); //запуск таймера
     }
 
     function moveBat(e) { // управление каретками
@@ -194,15 +202,16 @@
             ball.speedBatRight = -step;
         }
     }
-    function stopBat(e){
+
+    function stopBat(e) {
         if (e.code === "ControlLeft") { //левая каретка stop
             ball.speedBatLeft = 0;
         } else if (e.code === "ShiftLeft") { //левая каретка stop
             ball.speedBatLeft = 0;
         } else if (e.code === "ArrowDown") { //правая каретка stop
-            ball.speedBatRight= 0;
+            ball.speedBatRight = 0;
         } else if (e.code === "ArrowUp") {//правая каретка stop
-            ball.speedBatRight= 0;
+            ball.speedBatRight = 0;
         }
     }
 
