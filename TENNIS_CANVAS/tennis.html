@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<style>
+    .box {
+        margin: 20px;
+        max-width: 100%;
+    }
+
+
+    #report {
+        display: inline-block;
+        padding-left: 276px;
+        font-size: 30px;
+    }
+
+
+</style>
+<div class="box">
+    <div class="info">
+        <button id="btn">Start</button>
+        <div id="report">0:0</div>
+    </div>
+    <canvas id='canvas'></canvas>
+</div>
+
+
+<script>
+    // let divBall = document.getElementById('ball');
+    let btn = document.getElementById('btn');
+    let canvas = document.getElementById('canvas');
+    let context = canvas.getContext('2d');
+    let report = document.getElementById('report');
+    let RAF =
+        // находим, какой метод доступен
+        window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        // ни один не доступен
+        // будем работать просто по таймеру
+        function (callback) {
+            window.setTimeout(callback, 1000 / 60);
+        }
+    ;
+    let board = {
+        height: 500, // высота поля
+        width: 800, //ширина пля
+        statusGame: 0, // состояние игры: "0" - отановлена, "1" - идет игра
+        winLeft: 0, //счет на табло
+        winRight: 0, //счет на табло
+        speedBatLeft: 0, //скорость левой каретки
+        speedBatRight: 0, //скорость правой каретки
+        batLeftOY: 1,//изменяемая позиция левой каретки
+        batRightOY: 1,//изменяемая позиция правой каретки
+        batHeight: 150, //высота кареток
+        batWidth: 10, //ширина кареток
+        ballStep: 0, //стартовый шаг изменения пложения шарика
+        ballAngle: 0, //угол полета шарика
+        ballRadius: 20, //радиус шарика
+        positionBallTop: 0, //стартавая позиция шарика (будет записана)
+        positionBallLeft: 0, //стартавая позиция шарика (будет записана)
+        ballOX: 0,//изменяемая позиция шарика по ОХ
+        ballOY: 0,//изменяемая позиция шарика по ОУ
+    }
+    document.addEventListener('keydown', moveBat);
+    document.addEventListener('keyup', stopBat);
+    btn.addEventListener('click', startMoveBall);
+    window.onload = () => {
+        canvas.setAttribute('width', `${board.width}'px'`);
+        canvas.setAttribute('height', `${board.height}'px'`);
+        board.positionBallTop = parseFloat(canvas.getAttribute('height')) / 2; //рассчет положения шарика вцетре ОУ
+        board.positionBallLeft = parseFloat(canvas.getAttribute('width')) / 2; //рассчет положения шарика вцетре ОХ
+        paint(board.positionBallLeft, board.positionBallTop);
+        move();
+    }
+
+    function paint(OX, OY) {
+        // отрисовка поля
+        context.strokeStyle = '#333';
+        context.fillStyle = '#F0EE7E';
+        context.beginPath()
+        context.fillRect(0, 0, 800, 500);
+        context.strokeRect(0.5, 0.5, 799, 499);
+        context.closePath();
+        //отрисовка шарика
+        context.fillStyle = '#F02137';
+        context.beginPath()
+        context.arc(OX, OY, board.ballRadius, 0, Math.PI * 2, false);
+        context.fill();
+        context.closePath();
+        //отрисовка кареток
+        context.fillStyle = '#09AA57';
+        context.beginPath()
+        context.fillRect(1, board.batLeftOY, board.batWidth, board.batHeight);
+        context.fill();
+        context.closePath();
+        context.fillStyle = '#191497';
+        context.beginPath()
+        context.fillRect(789, board.batRightOY, board.batWidth, board.batHeight);
+        context.fill();
+        context.closePath();
+    }
+
+    function startMoveBall() { //запуск дижения шарика, установка случайного угла движения шарика
+        if (board.statusGame == 0) {
+            board.statusGame = 1; //начало игры
+            board.ballStep = 3; //запук шарика с шагом 3
+            paint(board.positionBallLeft, board.positionBallTop);//начальная позиция шарика
+            board.ballOY = parseFloat(canvas.getAttribute('height')) / 2; // положения шарика вцетре ОУ
+            board.ballOX = parseFloat(canvas.getAttribute('width')) / 2; // положения шарика вцетре ОХ
+            board.ballAngle = Math.floor(Math.random() * 360);
+            if (board.ballAngle % 90 < 15) { // исправление угла
+                board.ballAngle += 15;
+            } else if (board.ballAngle % 90 > 90 - 15) {
+                board.ballAngle -= 15;
+            }
+        }
+    }
+
+    function move() {
+
+        if (board.statusGame == 1) {
+            // рассчет положения шарика и его позиционирование
+            let cos = Math.cos(board.ballAngle * Math.PI / 180).toFixed(2); // косинус угла
+            let sin = Math.sin(board.ballAngle * Math.PI / 180).toFixed(2); // синус угла
+            let cx = +board.ballOX + (board.ballStep * cos);// положения шарика вцетре ОХ
+            let cy = +board.ballOY + (board.ballStep * sin);// положения шарика вцетре ОУ
+            let minBottomBoard = board.height - board.batHeight - 1;// максимальная высота опускания каретки
+
+            if (cx > board.width - board.ballRadius) { //проверкана вылет шарика справа по ОХ
+                board.ballOX = board.width - board.ballRadius;
+            } else if (cx < board.ballRadius) {//проверкана вылет шарика слева по ОХ
+                board.ballOX = board.ballRadius
+            } else {
+                board.ballOX = cx;
+            }
+            if (cy > board.height - board.ballRadius) {//проверкана вылет шарика сснизу по ОУ
+                board.ballOY = board.height - board.ballRadius;
+            } else if (cy < board.ballRadius) {//проверкана вылет шарика сверху по ОУ
+                board.ballOY = board.ballRadius;
+            } else {
+                board.ballOY = cy;
+            }
+            
+            paint(board.ballOX, board.ballOY);//новая позиция шарика
+            //движение кареток
+            if (board.batLeftOY <= minBottomBoard && board.speedBatLeft > 0) {      //левая каретка  вниз
+                board.batLeftOY += board.speedBatLeft;
+            } else if (board.batLeftOY - 1 >= 0 && board.speedBatLeft < 0) {         //левая каретка вверх
+                board.batLeftOY += board.speedBatLeft;
+            }
+            if (board.batRightOY <= minBottomBoard && board.speedBatRight > 0) {      //левая каретка  вниз
+                board.batRightOY += board.speedBatRight;
+            } else if (board.batRightOY - 1 >= 0 && board.speedBatRight < 0) {         //левая каретка вверх
+                board.batRightOY += board.speedBatRight;
+            }
+        }
+
+        check();
+    }
+
+    function check() { //проверки на касание стенок и кареток
+        if (board.statusGame == 1) {
+            if (board.ballOX - board.ballRadius <= board.batWidth && board.ballOY >= board.batLeftOY - board.ballRadius * 0.5 && board.ballOY <= board.batLeftOY + board.batHeight + board.ballRadius * 0.5) {
+                board.ballAngle = 180 - board.ballAngle;// рикошет от левой каретки
+            } else if (board.ballOX + board.ballRadius >= board.width - board.batWidth && board.ballOY >= board.batRightOY - board.ballRadius * 0.5 && board.ballOY <= board.batRightOY + board.batHeight + board.ballRadius * 0.5) {
+                board.ballAngle = 180 - board.ballAngle;// рикошет от правой каретки
+            } else if (board.ballOX >= board.width - board.ballRadius) {//проверка на касание справа
+                board.ballStep = 0; //остановка двжения шарика
+                board.statusGame = 0; // игра приостановлена
+                board.winLeft += 1;// добавить +1 к счету левому игроку
+                report.textContent = `${board.winLeft}:${board.winRight}`; // изменяет счет н экране
+                //board.ballAngle = 180 - board.ballAngle; // рикошет от стенки
+            } else if (board.ballOX - board.ballRadius <= 0) {//проверка на касание слева
+                board.ballStep = 0; //остановка двжения шарика
+                board.statusGame = 0; // игра приостановлена
+                board.winRight += 1 // добавить +1 к счету правому игроку
+                report.textContent = `${board.winLeft}:${board.winRight}`; // изменяет счет н экране
+                //board.ballAngle = 180 - board.ballAngle; // рикошет от стенки
+            } else if (board.ballOY >= board.height - board.ballRadius) {//проверка на касание снизу
+                board.ballAngle = 360 - board.ballAngle;// рикошет от стенки
+            } else if (board.ballOY - board.ballRadius <= 0) {//проверка на касание сверху
+                board.ballAngle = 360 - board.ballAngle;// рикошет от стенки
+            }
+        }
+        RAF(move);
+    }
+
+    function moveBat(e) { // управление каретками
+        let step = 2; // скорость движения кретки движения каретки
+        if (e.code === "ControlLeft") { //левая каретка вниз
+            board.speedBatLeft = step;
+        } else if (e.code === "ShiftLeft") { //левая каретка вверх
+            board.speedBatLeft = -step
+        } else if (e.code === "ArrowDown") { //правая каретка вниз
+            board.speedBatRight = step;
+        } else if (e.code === "ArrowUp") {//правая каретка вверх
+            board.speedBatRight = -step;
+        }
+    }
+
+    function stopBat(e) {
+        if (e.code === "ControlLeft") { //левая каретка stop
+            board.speedBatLeft = 0;
+        } else if (e.code === "ShiftLeft") { //левая каретка stop
+            board.speedBatLeft = 0;
+        } else if (e.code === "ArrowDown") { //правая каретка stop
+            board.speedBatRight = 0;
+        } else if (e.code === "ArrowUp") {//правая каретка stop
+            board.speedBatRight = 0;
+        }
+    }
+
+
+</script>
+</body>
+</html>
