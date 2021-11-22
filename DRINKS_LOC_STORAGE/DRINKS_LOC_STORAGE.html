@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DRINKS_LOC_STORAGE</title>
+</head>
+<body>
+
+<!--Напитки-->
+<button id="inputDrink" style="display:block; width: 250px; background: transparent; margin-bottom: 5px;">Ввод
+    информации о напитке
+</button>
+<button id="getDrink" style="display:block; width: 250px; background: transparent; margin-bottom: 5px;">Получение
+    информации о
+    напитке
+</button>
+<button id="deleteDrink" style="display:block; width: 250px; background: transparent; margin-bottom: 5px;">Удаление
+    информации о
+    напитке
+</button>
+<button id="allDrink" style="display:block; width: 250px; background: transparent; margin-bottom: 5px;">Перечень всех
+    напитков
+</button>
+<hr>
+<!--Блюда-->
+<button id="inputDish" style="display:block; width: 250px; background: transparent; margin-bottom: 5px;">Ввод рецепта
+</button>
+<button id="getDish" style="display:block; width: 250px; background: transparent; margin-bottom: 5px;">Получение
+    информации о
+    рецепте
+</button>
+<button id="deleteDish" style="display:block; width: 250px; background: transparent; margin-bottom: 5px;">Удаление
+    информации о
+    рецепте
+</button>
+<button id="allDish" style="display:block; width: 250px; background: transparent; margin-bottom: 5px;">Перечень всех
+    рецептов
+</button>
+
+<script>
+
+    "use strict";
+
+    let inputDrink = document.querySelector('#inputDrink');
+    let viewDrink = document.querySelector('#getDrink');
+    let deleteDrink = document.querySelector('#deleteDrink');
+    let allDrink = document.querySelector('#allDrink');
+    let inputDish = document.querySelector('#inputDish');
+    let viewDish = document.querySelector('#getDish');
+    let deleteDish = document.querySelector('#deleteDish');
+    let allDish = document.querySelector('#allDish');
+
+    class HashStorageClass {
+        obj = {};
+
+        addValue(key, value) {
+            this.obj[key] = value;
+            localStorage.setItem(this.name, JSON.stringify(this.obj))
+        }
+
+        getValue(key) {
+            return this.obj[key];
+        }
+
+        deleteValue(key) {
+            if (key in this.obj) {
+                delete this.obj[key];
+                localStorage.setItem(this.name, JSON.stringify(this.obj))
+                if(localStorage.getItem(this.name)=='{}'){
+                    localStorage.removeItem(this.name)
+                }
+                return true
+            } else {
+                return false;
+            }
+        }
+
+        getKeys() {
+            let arr = [];
+            for (let key in this.obj) {
+                arr.push(key);
+            }
+            return arr
+        }
+    }
+class DrinkStorage extends HashStorageClass{
+        constructor(name) {
+            super();
+            this.name = name;
+        }
+    askQuestion(question) {
+        let answer = prompt(question);
+        while (!answer) {
+            if (answer == null) break;
+            else if (!answer) answer = prompt(question);
+        }
+        return answer
+    }
+
+    setDrink() {
+        let objDrink = {};
+        let nameDrink = this.askQuestion('Введите название напитка.');
+        if (nameDrink === null) return false;
+        let alcoholic = (confirm('Это алькогольный напиток? Если нет, то нажите "отмена"')) ? 'Да' : 'Нет';
+        let recipe = this.askQuestion('Напишите рецепт напитка.');
+        if (recipe === null) return false;
+        objDrink.recipeDrink = recipe;
+        objDrink.alcoholicDrink = alcoholic;
+        this.addValue(nameDrink, objDrink);
+
+    }
+
+    showDrink() {
+        let nameDrink = this.askQuestion('Введите название напитка.');
+        if (nameDrink === null) return false;
+        let objDrink = this.getValue(nameDrink);
+        if (objDrink) {
+            let str = `
+    Напиток ${nameDrink}
+    Алкогольный: ${objDrink.alcoholicDrink}
+    Рецепт приготовления: ${objDrink.recipeDrink}`;
+            return alert(str);
+        } else return alert('Такой напиток не найден!');
+    }
+
+    delDrink() {
+        let nameDrink = this.askQuestion('Введите название напитка.');
+        if (nameDrink === null) return false;
+        let del = this.deleteValue(nameDrink);
+        alert(del ? "Удален" : "Не найден");
+    }
+
+    showAllDrink() {
+        let arr = this.getKeys();
+        if (arr.length !== 0) {
+            let str;
+            for (let i = 0; i < arr.length; i++) {
+                if (str) {
+                    str += `название ${arr[i]}\n`;
+                } else {
+                    str = `название ${arr[i]}\n`;
+                }
+            }
+            alert(str);
+        } else alert('У Вас нет напитков.');
+    }
+    localStorage(){
+        if(localStorage.getItem('drinkStorage')){
+            this.obj = JSON.parse(localStorage.getItem('drinkStorage'));
+        }
+    }
+}
+    class DishStorage extends HashStorageClass{
+        constructor(name) {
+            super();
+            this.name = name;
+        }
+        askQuestion(question) {
+            let answer = prompt(question);
+            while (!answer) {
+                if (answer == null) break;
+                else if (!answer) answer = prompt(question);
+            }
+            return answer
+        }
+
+        setDrink() {
+            let objDrink = {};
+            let nameDrink = this.askQuestion('Введите название блюда.');
+            if (nameDrink === null) return false;
+            let alcoholic = (confirm('Это диетическое блюдо? Если нет, то нажите "отмена"')) ? 'Да' : 'Нет';
+            let recipe = this.askQuestion('Напишите рецепт блюда.');
+            if (recipe === null) return false;
+            objDrink.recipeDrink = recipe;
+            objDrink.alcoholicDrink = alcoholic;
+            this.addValue(nameDrink, objDrink);
+
+        }
+
+        showDrink() {
+            let nameDrink = this.askQuestion('Введите название блюда.');
+            if (nameDrink === null) return false;
+            let objDrink = this.getValue(nameDrink);
+            if (objDrink) {
+                let str = `
+    Блюдо ${nameDrink}
+    Диетическое: ${objDrink.alcoholicDrink}
+    Рецепт приготовления: ${objDrink.recipeDrink}`;
+                return alert(str);
+            } else return alert('Такое блюдо не найдено!');
+        }
+
+        delDrink() {
+            let nameDrink = this.askQuestion('Введите название блюда.');
+            if (nameDrink === null) return false;
+            let del = this.deleteValue(nameDrink);
+            alert(del ? "Удалено" : "Не найдено");
+        }
+
+        showAllDrink() {
+            let arr = this.getKeys();
+            if (arr.length !== 0) {
+                let str;
+                for (let i = 0; i < arr.length; i++) {
+                    if (str) {
+                        str += `название ${arr[i]}\n`;
+                    } else {
+                        str = `название ${arr[i]}\n`;
+                    }
+                }
+                alert(str);
+            } else alert('У Вас нет рецептов.');
+        }
+        localStorage(){
+            if(localStorage.getItem('dishStorage')){
+                this.obj = JSON.parse(localStorage.getItem('dishStorage'));
+            }
+
+        }
+    }
+    let drinkStorage = new DrinkStorage('drinkStorage');
+    let dishStorage = new DishStorage('dishStorage')
+    drinkStorage.localStorage();
+    dishStorage.localStorage();
+    //События напитков
+    inputDrink.addEventListener('click',drinkStorage.setDrink.bind(drinkStorage))
+    viewDrink.addEventListener('click',drinkStorage.showDrink.bind(drinkStorage))
+    deleteDrink.addEventListener('click',drinkStorage.delDrink.bind(drinkStorage))
+    allDrink.addEventListener('click',drinkStorage.showAllDrink.bind(drinkStorage))
+    //События блюд
+    inputDish.addEventListener('click',dishStorage.setDrink.bind(dishStorage))
+    viewDish.addEventListener('click',dishStorage.showDrink.bind(dishStorage))
+    deleteDish.addEventListener('click',dishStorage.delDrink.bind(dishStorage))
+    allDish.addEventListener('click',dishStorage.showAllDrink.bind(dishStorage))
+
+
+
+
+
+
+</script>
+
+
+</body>
+</html>
