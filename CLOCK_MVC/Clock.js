@@ -14,7 +14,7 @@ class Clock {
         this.city = city;
     }
 
-    update = function () {
+    update = function (clockView) {
         let gmtH = (this.timeZone[this.city].toFixed()) * 60 * 60 * 1000; // GMT(часы)
         let gmtM = (this.timeZone[this.city] - this.timeZone[this.city].toFixed()).toFixed(2) * 100 * 60 * 1000;//GMT (минуты)
         let date = new Date();// дата в текущем часосов поясе
@@ -28,7 +28,7 @@ class Clock {
         let rotateMinutes = 360 / 60 * minutes; // угол минутной стрелки
         let rotateSeconds = 360 / 60 * seconds; // угол секундной стрелки
         let digitalWatch = `${str0l(hour, 2)}:${str0l(minutes, 2)}:${str0l(seconds, 2)}`;
-
+        let delayMilliseconds = 1020 - new Date().getMilliseconds();//задержки в миллесекундах +20 миллисекунд погрешность setTimeout
         function str0l(val, len) {
             let strVal = val.toString();
             while (strVal.length < len)
@@ -45,6 +45,8 @@ class Clock {
         this.rotateSeconds = rotateSeconds; // угол секундной стрелки
         this.digitalWatch = digitalWatch; //электронные часы
 
+        clockView.viewTime(this.rotateHour, this.rotateMinutes, this.rotateSeconds, this.digitalWatch);//запускает отображение часов
+        setTimeout(this.update.bind(this,clockView), delayMilliseconds); //выполняет функцию с учетом задержки в миллесекундах
     }
 }
 
@@ -55,25 +57,17 @@ let clockBerlin = new Clock('Berlin');
 let clockTokyo  = new Clock('Tokyo');
 let clockLondon  = new Clock('London');
 
-function tick() {
-    let delayMilliseconds = 1020 - new Date().getMilliseconds();//задержки в миллесекундах +20 миллисекунд погрешность setTimeout
-    clockKabul.update();
-    clockMinsk.update();
-    clockNewYork.update();
-    clockBerlin.update();
-    clockTokyo.update();
-    clockLondon.update();
-    clockViewDOMKabul.viewTime(clockKabul.rotateHour, clockKabul.rotateMinutes, clockKabul.rotateSeconds, clockKabul.digitalWatch);
-    clockViewDOMMinsk.viewTime(clockMinsk.rotateHour, clockMinsk.rotateMinutes, clockMinsk.rotateSeconds, clockMinsk.digitalWatch);
-    clockViewSVGNewYork.viewTime(clockNewYork.rotateHour, clockNewYork.rotateMinutes, clockNewYork.rotateSeconds, clockNewYork.digitalWatch);
-    clockViewSVGBerlin.viewTime(clockBerlin.rotateHour, clockBerlin.rotateMinutes, clockBerlin.rotateSeconds, clockBerlin.digitalWatch);
-    clockViewCanvasTokyo.viewTime(clockTokyo.rotateHour, clockTokyo.rotateMinutes, clockTokyo.rotateSeconds, clockTokyo.digitalWatch);
-    clockViewCanvasLondon.viewTime(clockLondon.rotateHour, clockLondon.rotateMinutes, clockLondon.rotateSeconds, clockLondon.digitalWatch);
+    clockKabul.update(clockViewDOMKabul);
+    clockMinsk.update(clockViewDOMMinsk);
+    clockNewYork.update(clockViewSVGNewYork);
+    clockBerlin.update(clockViewSVGBerlin);
+    clockTokyo.update(clockViewCanvasTokyo);
+    clockLondon.update(clockViewCanvasLondon);
 
-    setTimeout(tick, delayMilliseconds); //выполняет функцию с учетом задержки в миллесекундах
-}
 
-tick()
+
+
+
 
 
 

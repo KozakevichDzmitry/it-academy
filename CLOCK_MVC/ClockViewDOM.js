@@ -76,12 +76,14 @@ class ClockViewDOM {
             arrowMinutes.style.transform = `translateX(-50%) rotate(${rotateMinutes}deg)`;
             arrowSecond.style.transform = `translateX(-50%) rotate(${rotateSeconds}deg)`;
             digitalWatch.textContent = time;
+
         }
     }
 }
 
 let clockViewDOMKabul = new ClockViewDOM('Kabul');
 clockViewDOMKabul.createClock()
+
 
 let clockViewDOMMinsk = new ClockViewDOM('Minsk');
 clockViewDOMMinsk.createClock()
