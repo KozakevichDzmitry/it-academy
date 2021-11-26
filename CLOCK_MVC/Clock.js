@@ -9,12 +9,21 @@ class Clock {
         Vladivostok: 10,
         Kabul: 4.30,
     }
+    view = true;
 
     constructor(city) {
         this.city = city;
     }
 
-    update = function (clockView) {
+    viewFalse() {
+        this.view = false;
+    }
+
+    viewTrue() {
+        this.view = true;
+    }
+
+    update(clockView) {
         let gmtH = (this.timeZone[this.city].toFixed()) * 60 * 60 * 1000; // GMT(часы)
         let gmtM = (this.timeZone[this.city] - this.timeZone[this.city].toFixed()).toFixed(2) * 100 * 60 * 1000;//GMT (минуты)
         let date = new Date();// дата в текущем часосов поясе
@@ -45,8 +54,9 @@ class Clock {
         this.rotateSeconds = rotateSeconds; // угол секундной стрелки
         this.digitalWatch = digitalWatch; //электронные часы
 
-        clockView.viewTime(this.rotateHour, this.rotateMinutes, this.rotateSeconds, this.digitalWatch);//запускает отображение часов
-        setTimeout(this.update.bind(this,clockView), delayMilliseconds); //выполняет функцию с учетом задержки в миллесекундах
+        if (this.view) clockView.viewTime(this.rotateHour, this.rotateMinutes, this.rotateSeconds, this.digitalWatch);//запускает отображение часов
+
+        setTimeout(this.update.bind(this, clockView), delayMilliseconds); //выполняет функцию с учетом задержки в миллесекундах
     }
 }
 
@@ -54,15 +64,10 @@ let clockKabul = new Clock('Kabul');
 let clockMinsk = new Clock('Minsk');
 let clockNewYork = new Clock('New-York');
 let clockBerlin = new Clock('Berlin');
-let clockTokyo  = new Clock('Tokyo');
-let clockLondon  = new Clock('London');
+let clockTokyo = new Clock('Tokyo');
+let clockLondon = new Clock('London');
 
-    clockKabul.update(clockViewDOMKabul);
-    clockMinsk.update(clockViewDOMMinsk);
-    clockNewYork.update(clockViewSVGNewYork);
-    clockBerlin.update(clockViewSVGBerlin);
-    clockTokyo.update(clockViewCanvasTokyo);
-    clockLondon.update(clockViewCanvasLondon);
+
 
 
 

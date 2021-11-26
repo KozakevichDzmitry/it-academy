@@ -1,9 +1,10 @@
-
 class ClockViewDOM {
     view = true;
+
     constructor(city) {
-        this.city= city;
+        this.city = city;
     }
+
     createClock() {
         let clock = document.querySelector('.clock');
         let clockBoard = document.createElement('div');
@@ -66,24 +67,21 @@ class ClockViewDOM {
 
     }
 
-    viewTime(rotateHour,rotateMinutes,rotateSeconds,time) {
-        if(this.view){
-            let digitalWatch = document.querySelector(`#${this.city}-digital_watch`);
-            let arrowHour = document.querySelector(`#${this.city}-arrow_hour`);
-            let arrowMinutes = document.querySelector(`#${this.city}-arrow_minute`);
-            let arrowSecond = document.querySelector(`#${this.city}-arrow_second`);
-            arrowHour.style.transform = `translateX(-50%) rotate(${rotateHour}deg)`;
-            arrowMinutes.style.transform = `translateX(-50%) rotate(${rotateMinutes}deg)`;
-            arrowSecond.style.transform = `translateX(-50%) rotate(${rotateSeconds}deg)`;
-            digitalWatch.textContent = time;
+    viewTime(rotateHour, rotateMinutes, rotateSeconds, time) {
+        let digitalWatch = document.querySelector(`#${this.city}-digital_watch`);
+        let arrowHour = document.querySelector(`#${this.city}-arrow_hour`);
+        let arrowMinutes = document.querySelector(`#${this.city}-arrow_minute`);
+        let arrowSecond = document.querySelector(`#${this.city}-arrow_second`);
+        arrowHour.style.transform = `translateX(-50%) rotate(${rotateHour}deg)`;
+        arrowMinutes.style.transform = `translateX(-50%) rotate(${rotateMinutes}deg)`;
+        arrowSecond.style.transform = `translateX(-50%) rotate(${rotateSeconds}deg)`;
+        digitalWatch.textContent = time;
 
-        }
     }
 }
 
 let clockViewDOMKabul = new ClockViewDOM('Kabul');
 clockViewDOMKabul.createClock()
-
 
 let clockViewDOMMinsk = new ClockViewDOM('Minsk');
 clockViewDOMMinsk.createClock()

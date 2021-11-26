@@ -1,8 +1,10 @@
 class ClockViewSVG {
     view = true;
+
     constructor(city) {
-        this.city= city;
+        this.city = city;
     }
+
     createClock() {
         let clock = document.querySelector('.clock');
         let clockBoardBox = document.createElement('div');
@@ -26,13 +28,13 @@ class ClockViewSVG {
         start.setAttribute('id', `${this.city}-btnStart`);
         stop.setAttribute('id', `${this.city}-btnStop`);
         clockBox.classList.add(`Clock-${this.city}`);
-        digitalWatch.style.fontSize = clockFontSize+'px';
+        digitalWatch.style.fontSize = clockFontSize + 'px';
         clockBoardBox.setAttribute('class', 'board_svg');
         clockBoardBox.style.width = clockSize + 'px';
         clockBoardBox.style.height = clockSize + 'px';
         clockBoardSvg.setAttribute('class', 'circle');
-        clockBoardSvg.setAttribute('width','100%')
-        clockBoardSvg.setAttribute('height','100%')
+        clockBoardSvg.setAttribute('width', '100%')
+        clockBoardSvg.setAttribute('height', '100%')
         clockBoardSvgCircle.setAttribute('fill', '#FCCA66');
         clockBoardSvgCircle.setAttribute('cx', '50%');
         clockBoardSvgCircle.setAttribute('cy', '50%');
@@ -88,8 +90,8 @@ class ClockViewSVG {
             clockBoardSvgNumber.setAttribute('y', '50%');
             clockBoardSvgNumber.setAttribute('text-anchor', 'middle');
             clockBoardSvgNumber.setAttribute('dominant-baseline', 'central');
-            clockBoardSvgNumber.setAttribute('font-size',`${clockFontSize}px`)
-            clockBoardSvgNumber.setAttribute('transform',`translate(0) rotate(${-stepInDegree * i} ${clockFontSize*1.11} ${clockFontSize*1.11})`)
+            clockBoardSvgNumber.setAttribute('font-size', `${clockFontSize}px`)
+            clockBoardSvgNumber.setAttribute('transform', `translate(0) rotate(${-stepInDegree * i} ${clockFontSize * 1.11} ${clockFontSize * 1.11})`)
             clockBoardSvgNumber.textContent = i;
             clockBoardSvg.appendChild(clockBoardSvgCircle);
             clockBoardSvg.appendChild(clockBoardSvgNumber);
@@ -97,15 +99,16 @@ class ClockViewSVG {
         }
         clock.appendChild(clockBox);
     }
-    viewTime(rotateHour,rotateMinutes,rotateSeconds,time) {
-        if(this.view){
+
+    viewTime(rotateHour, rotateMinutes, rotateSeconds, time) {
+        if (this.view) {
             let digitalWatch = document.querySelector(`#${this.city}-digital_watch`);
             let arrowHour = document.querySelector(`#${this.city}-arrow_hour_svg`);
             let arrowMinutes = document.querySelector(`#${this.city}-arrow_minute_svg`);
             let arrowSecond = document.querySelector(`#${this.city}-arrow_second_svg`);
             arrowHour.style.transform = `translateX(-50%) rotate(${rotateHour}deg)`;
             arrowMinutes.style.transform = `translateX(-50%) rotate(${rotateMinutes}deg)`;
-            arrowSecond.style.transform = `translateX(-50%) rotate(${rotateSeconds+45}deg)`;
+            arrowSecond.style.transform = `translateX(-50%) rotate(${rotateSeconds + 45}deg)`;
             digitalWatch.textContent = time;
         }
     }

@@ -12,9 +12,11 @@
         justify-content: space-between;
         flex-wrap: wrap;
     }
+
     .board_svg {
         position: relative;
     }
+
     .board {
         position: relative;
         background: #FCCA66;
@@ -41,6 +43,7 @@
         transform: translateX(-50%);
 
     }
+
     .clock_face_svg {
         position: absolute;
         width: 13%;
@@ -52,6 +55,7 @@
         transform: translateX(-50%);
         z-index: 1;
     }
+
     .clock_face span {
         position: absolute;
         top: 50%;
@@ -81,6 +85,7 @@
         height: 3.5%;
         z-index: 10;
     }
+
     .arrow_hour_svg {
         position: absolute;
         height: 45%;
@@ -91,16 +96,17 @@
         transform: translateX(-50%) rotate(0deg);
         z-index: 5;
     }
+
     .arrow_minute_svg {
-           position: absolute;
-           height: 43%;
-           width: 50%;
-           top: 10%;
-           left: 47.7%;
-           transform-origin: 55% 93%;
-           transform: translateX(-50%) rotate(45deg);
-           z-index: 4;
-       }
+        position: absolute;
+        height: 43%;
+        width: 50%;
+        top: 10%;
+        left: 47.7%;
+        transform-origin: 55% 93%;
+        transform: translateX(-50%) rotate(45deg);
+        z-index: 4;
+    }
 
     .arrow_second_svg {
 
@@ -113,6 +119,7 @@
         transform: translateX(-50%) rotate(353deg);
         z-index: 3;
     }
+
     .arrow_hour {
         position: absolute;
         height: 31%;
@@ -161,7 +168,8 @@
         height: 48%;
         z-index: 10;
     }
-    button{
+
+    button {
         margin-right: 10px;
     }
 </style>
@@ -176,10 +184,27 @@
 <script src="ClockViewDOM.js"></script>
 <script src="ClockViewSVG.js"></script>
 <script src="ClockViewCanvas.js"></script>
-<script src="ClockControllerButtons.js"></script>
 <script src="Clock.js"></script>
+<script src="ClockControllerButtons.js"></script>
 
 <script>
+    clockKabul.update(clockViewDOMKabul);
+    clockControllerButtonsKabul.click();
+
+    clockMinsk.update(clockViewDOMMinsk);
+    clockControllerButtonsMinsk.click();
+
+    clockNewYork.update(clockViewSVGNewYork);
+    clockControllerButtonsNewYork.click();
+
+    clockBerlin.update(clockViewSVGBerlin);
+    clockControllerButtonsBerlin.click();
+
+    clockTokyo.update(clockViewCanvasTokyo);
+    clockControllerButtonsTokyo.click();
+
+    clockLondon.update(clockViewCanvasLondon);
+    clockControllerButtonsLondon.click();
 
 </script>
 </body>

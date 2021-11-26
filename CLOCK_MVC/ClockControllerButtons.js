@@ -1,30 +1,34 @@
 class ClockControllerButtons {
     constructor(city, link) {
-        this.city= city;
-        this.link= link;
-        this.btnStart = city +`-btnStart`;
-        this.btnStop = city+`-btnStop`;
+        this.city = city;
+        this.link = link;
+        this.btnStart = city + `-btnStart`;
+        this.btnStop = city + `-btnStop`;
     }
 
-    click(){
+    click() {
 
         let btnStart = document.getElementById(this.btnStart)
         let btnStop = document.getElementById(this.btnStop)
 
-        btnStart.addEventListener('click',()=>this.link.view=true)
-        btnStop.addEventListener('click',()=>this.link.view=false)
+        btnStart.addEventListener('click', () => {
+                this.link.viewTrue()
+            }
+        )
+        btnStop.addEventListener('click', () => this.link.viewFalse())
 
     }
-};
-let clockControllerButtonsKabul = new ClockControllerButtons('Kabul',clockViewDOMKabul);
-clockControllerButtonsKabul.click();
-let clockControllerButtonsMinsk = new ClockControllerButtons('Minsk',clockViewDOMMinsk);
-clockControllerButtonsMinsk.click();
-let clockControllerButtonsNewYork = new ClockControllerButtons('New-York',clockViewSVGNewYork);
-clockControllerButtonsNewYork.click();
-let clockControllerButtonsBerlin = new ClockControllerButtons('Berlin',clockViewSVGBerlin);
-clockControllerButtonsBerlin.click();
-let clockControllerButtonsTokyo = new ClockControllerButtons('Tokyo',clockViewCanvasTokyo);
-clockControllerButtonsTokyo.click();
-let clockControllerButtonsLondon = new ClockControllerButtons('London',clockViewCanvasLondon);
-clockControllerButtonsLondon.click();
+}
+
+let clockControllerButtonsKabul = new ClockControllerButtons('Kabul', clockKabul);
+
+let clockControllerButtonsMinsk = new ClockControllerButtons('Minsk', clockMinsk);
+
+let clockControllerButtonsNewYork = new ClockControllerButtons('New-York', clockNewYork);
+
+let clockControllerButtonsBerlin = new ClockControllerButtons('Berlin', clockBerlin);
+
+let clockControllerButtonsTokyo = new ClockControllerButtons('Tokyo', clockTokyo);
+
+let clockControllerButtonsLondon = new ClockControllerButtons('London', clockLondon);
+

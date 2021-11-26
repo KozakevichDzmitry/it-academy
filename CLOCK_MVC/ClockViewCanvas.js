@@ -95,7 +95,8 @@ class ClockViewCanvas {
             createArrow(clockSize * 0.02, clockSize * 0.25, rotateHour); //часовая стрелка
             createArrow(clockSize * 0.015, clockSize * 0.35, rotateMinutes); //минутная стрелка
             createArrow(clockSize * 0.01, clockSize * 0.45, rotateSeconds); //секундная стрелка
-//элекронные часы
+
+            // элекронные часы
             ctx.fillStyle = "#333";
             ctx.beginPath();
             ctx.font = `${clockSize * 0.05}px arial`;
