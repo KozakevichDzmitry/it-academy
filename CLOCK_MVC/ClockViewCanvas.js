@@ -109,7 +109,3 @@ class ClockViewCanvas {
     }
 }
 
-let clockViewCanvasTokyo = new ClockViewCanvas('Tokyo');
-clockViewCanvasTokyo.createClock()
-let clockViewCanvasLondon = new ClockViewCanvas('London');
-clockViewCanvasLondon.createClock()

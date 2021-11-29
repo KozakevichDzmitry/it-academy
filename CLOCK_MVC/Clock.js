@@ -60,12 +60,8 @@ class Clock {
     }
 }
 
-let clockKabul = new Clock('Kabul');
-let clockMinsk = new Clock('Minsk');
-let clockNewYork = new Clock('New-York');
-let clockBerlin = new Clock('Berlin');
-let clockTokyo = new Clock('Tokyo');
-let clockLondon = new Clock('London');
+
+
 
 
 

@@ -114,8 +114,3 @@ class ClockViewSVG {
     }
 }
 
-let clockViewSVGNewYork = new ClockViewSVG('New-York');
-clockViewSVGNewYork.createClock()
-
-let clockViewSVGBerlin = new ClockViewSVG('Berlin');
-clockViewSVGBerlin.createClock()

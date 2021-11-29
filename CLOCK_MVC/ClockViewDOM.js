@@ -80,11 +80,9 @@ class ClockViewDOM {
     }
 }
 
-let clockViewDOMKabul = new ClockViewDOM('Kabul');
-clockViewDOMKabul.createClock()
 
-let clockViewDOMMinsk = new ClockViewDOM('Minsk');
-clockViewDOMMinsk.createClock()
+
+
 
 
 
