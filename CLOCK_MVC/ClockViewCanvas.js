@@ -1,8 +1,9 @@
 class ClockViewCanvas {
-    view = true;
+
     clockSize = 300;// диаметр часов
     constructor(city) {
         this.city = city;
+        this.createClock();
     }
 
     createClock() {
@@ -33,8 +34,8 @@ class ClockViewCanvas {
         this.viewTime(0, 90, 180, '12:45:13')
     }
 
-    viewTime(rotateHour, rotateMinutes, rotateSeconds, time) {
-        if (this.view) {
+    viewTime(clock) {
+
             let clockSize = this.clockSize;
             let ctx = this.ctx;
             let midSize = this.clockSize * 0.035;// диаметр центра часов
@@ -92,9 +93,9 @@ class ClockViewCanvas {
                 ctx.closePath();
             }
 
-            createArrow(clockSize * 0.02, clockSize * 0.25, rotateHour); //часовая стрелка
-            createArrow(clockSize * 0.015, clockSize * 0.35, rotateMinutes); //минутная стрелка
-            createArrow(clockSize * 0.01, clockSize * 0.45, rotateSeconds); //секундная стрелка
+            createArrow(clockSize * 0.02, clockSize * 0.25, clock.rotateHour); //часовая стрелка
+            createArrow(clockSize * 0.015, clockSize * 0.35, clock.rotateMinutes); //минутная стрелка
+            createArrow(clockSize * 0.01, clockSize * 0.45, clock.rotateSeconds); //секундная стрелка
 
             // элекронные часы
             ctx.fillStyle = "#333";
@@ -102,10 +103,10 @@ class ClockViewCanvas {
             ctx.font = `${clockSize * 0.05}px arial`;
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillText(time, clockSize * 0.5, clockSize * 0.3);
+            ctx.fillText(clock.digitalWatch, clockSize * 0.5, clockSize * 0.3);
             ctx.closePath();
 
         }
-    }
+
 }
 

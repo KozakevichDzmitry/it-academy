@@ -188,56 +188,38 @@
 <script src="ClockControllerButtons.js"></script>
 
 <script>
-    let clockKabul = new Clock('Kabul');
     let clockViewDOMKabul = new ClockViewDOM('Kabul');
+    let clockKabul = new Clock('Kabul',clockViewDOMKabul);
     let clockControllerButtonsKabul = new ClockControllerButtons('Kabul', clockKabul);
 
-    let clockMinsk = new Clock('Minsk');
     let clockViewDOMMinsk = new ClockViewDOM('Minsk');
+    let clockMinsk = new Clock('Minsk',clockViewDOMMinsk);
     let clockControllerButtonsMinsk = new ClockControllerButtons('Minsk', clockMinsk);
 
-    let clockNewYork = new Clock('New-York');
+
     let clockViewSVGNewYork = new ClockViewSVG('New-York');
+    let clockNewYork = new Clock('New-York',clockViewSVGNewYork);
     let clockControllerButtonsNewYork = new ClockControllerButtons('New-York', clockNewYork);
 
-    let clockBerlin = new Clock('Berlin');
-    let clockControllerButtonsBerlin = new ClockControllerButtons('Berlin', clockBerlin);
     let clockViewSVGBerlin = new ClockViewSVG('Berlin');
+    let clockBerlin = new Clock('Berlin',clockViewSVGBerlin);
+    let clockControllerButtonsBerlin = new ClockControllerButtons('Berlin', clockBerlin);
 
-    let clockTokyo = new Clock('Tokyo');
+
     let clockViewCanvasTokyo = new ClockViewCanvas('Tokyo');
+    let clockTokyo = new Clock('Tokyo',clockViewCanvasTokyo);
     let clockControllerButtonsTokyo = new ClockControllerButtons('Tokyo', clockTokyo);
 
-    let clockLondon = new Clock('London');
+
     let clockViewCanvasLondon = new ClockViewCanvas('London');
+    let clockLondon = new Clock('London',clockViewCanvasLondon );
     let clockControllerButtonsLondon = new ClockControllerButtons('London', clockLondon);
 
-    clockViewDOMKabul.createClock();
-    clockKabul.update(clockViewDOMKabul);
-    clockControllerButtonsKabul.click();
-
-    clockViewDOMMinsk.createClock()
-    clockMinsk.update(clockViewDOMMinsk);
-    clockControllerButtonsMinsk.click();
-
-    clockViewCanvasTokyo.createClock()
-    clockTokyo.update(clockViewCanvasTokyo);
-    clockControllerButtonsTokyo.click();
 
 
-    clockViewCanvasLondon.createClock()
-    clockLondon.update(clockViewCanvasLondon);
-    clockControllerButtonsLondon.click();
 
 
-    clockViewSVGNewYork.createClock()
-    clockNewYork.update(clockViewSVGNewYork);
-    clockControllerButtonsNewYork.click();
 
-
-    clockViewSVGBerlin.createClock()
-    clockBerlin.update(clockViewSVGBerlin);
-    clockControllerButtonsBerlin.click();
 
 
 

@@ -3,6 +3,7 @@ class ClockViewDOM {
 
     constructor(city) {
         this.city = city;
+        this.createClock();
     }
 
     createClock() {
@@ -67,16 +68,15 @@ class ClockViewDOM {
 
     }
 
-    viewTime(rotateHour, rotateMinutes, rotateSeconds, time) {
+    viewTime(clock) {
         let digitalWatch = document.querySelector(`#${this.city}-digital_watch`);
         let arrowHour = document.querySelector(`#${this.city}-arrow_hour`);
         let arrowMinutes = document.querySelector(`#${this.city}-arrow_minute`);
         let arrowSecond = document.querySelector(`#${this.city}-arrow_second`);
-        arrowHour.style.transform = `translateX(-50%) rotate(${rotateHour}deg)`;
-        arrowMinutes.style.transform = `translateX(-50%) rotate(${rotateMinutes}deg)`;
-        arrowSecond.style.transform = `translateX(-50%) rotate(${rotateSeconds}deg)`;
-        digitalWatch.textContent = time;
-
+        arrowHour.style.transform = `translateX(-50%) rotate(${clock.rotateHour}deg)`;
+        arrowMinutes.style.transform = `translateX(-50%) rotate(${clock.rotateMinutes}deg)`;
+        arrowSecond.style.transform = `translateX(-50%) rotate(${clock.rotateSeconds}deg)`;
+        digitalWatch.textContent = clock.digitalWatch;
     }
 }
 

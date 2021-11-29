@@ -4,15 +4,16 @@ class ClockControllerButtons {
         this.link = link;
         this.btnStart = city + `-btnStart`;
         this.btnStop = city + `-btnStop`;
+        this.init()
     }
 
-    click() {
+    init() {
 
         let btnStart = document.getElementById(this.btnStart)
         let btnStop = document.getElementById(this.btnStop)
 
-        btnStart.addEventListener('click', () => this.link.viewTrue())
-        btnStop.addEventListener('click', () => this.link.viewFalse())
+        btnStart.addEventListener('click', () => this.link.stopFalse())
+        btnStop.addEventListener('click', () => this.link.stopTrue())
 
     }
 }

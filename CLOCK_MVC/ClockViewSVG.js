@@ -1,8 +1,9 @@
 class ClockViewSVG {
-    view = true;
+
 
     constructor(city) {
         this.city = city;
+        this.createClock();
     }
 
     createClock() {
@@ -100,17 +101,17 @@ class ClockViewSVG {
         clock.appendChild(clockBox);
     }
 
-    viewTime(rotateHour, rotateMinutes, rotateSeconds, time) {
-        if (this.view) {
+    viewTime(clock) {
+
             let digitalWatch = document.querySelector(`#${this.city}-digital_watch`);
             let arrowHour = document.querySelector(`#${this.city}-arrow_hour_svg`);
             let arrowMinutes = document.querySelector(`#${this.city}-arrow_minute_svg`);
             let arrowSecond = document.querySelector(`#${this.city}-arrow_second_svg`);
-            arrowHour.style.transform = `translateX(-50%) rotate(${rotateHour}deg)`;
-            arrowMinutes.style.transform = `translateX(-50%) rotate(${rotateMinutes}deg)`;
-            arrowSecond.style.transform = `translateX(-50%) rotate(${rotateSeconds + 45}deg)`;
-            digitalWatch.textContent = time;
-        }
+            arrowHour.style.transform = `translateX(-50%) rotate(${clock.rotateHour}deg)`;
+            arrowMinutes.style.transform = `translateX(-50%) rotate(${clock.rotateMinutes}deg)`;
+            arrowSecond.style.transform = `translateX(-50%) rotate(${clock.rotateSeconds + 45}deg)`;
+            digitalWatch.textContent = clock.digitalWatch;
+
     }
 }
 

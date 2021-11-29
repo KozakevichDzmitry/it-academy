@@ -9,18 +9,23 @@ class Clock {
         Vladivostok: 10,
         Kabul: 4.30,
     }
-    view = true;
-
-    constructor(city) {
+    stop = false;
+    constructor(city,clockView) {
         this.city = city;
+        this.clockView = clockView;
+        this.update(this.clockView)
     }
 
-    viewFalse() {
-        this.view = false;
+    stopFalse() {
+        if(this.stop){
+            let delayMilliseconds = 1020 - new Date().getMilliseconds();//задержки в миллесекундах +20 миллисекунд погрешность setTimeout
+            this.stop = false;
+            setTimeout(()=>this.update(this.clockView), delayMilliseconds);
+        }
     }
 
-    viewTrue() {
-        this.view = true;
+    stopTrue() {
+        this.stop = true;
     }
 
     update(clockView) {
@@ -53,11 +58,13 @@ class Clock {
         this.rotateMinutes = rotateMinutes; // угол минутной стрелки
         this.rotateSeconds = rotateSeconds; // угол секундной стрелки
         this.digitalWatch = digitalWatch; //электронные часы
+        if (!this.stop){
+            this.clockView.viewTime(this);//запускает отображение часов
+            setTimeout(this.update.bind(this, clockView), delayMilliseconds); //выполняет функцию с учетом задержки в миллесекундах
+        }
 
-        if (this.view) clockView.viewTime(this.rotateHour, this.rotateMinutes, this.rotateSeconds, this.digitalWatch);//запускает отображение часов
-
-        setTimeout(this.update.bind(this, clockView), delayMilliseconds); //выполняет функцию с учетом задержки в миллесекундах
     }
+
 }
 
 
